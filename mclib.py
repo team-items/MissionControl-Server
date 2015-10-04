@@ -16,3 +16,6 @@ def printError(text):
 
 def printSuccess(text):
 	print(colored("[Success] "+text, 'green'));
+
+def printInfo(text):
+	print(colored("[Info] "+text, 'grey'))
