@@ -13,16 +13,22 @@ class MissionControl():
 
 	#Setup functions 
 	def setUp(self, configs):
-		settings = json.loads(configs);
+		try:
+			settings = json.loads(configs);
 
-		if("Server" in settings.keys()):
-			if("Port" in settings["Server"].keys()):
-				self.PORT = settings["Server"]["Port"];
+			if("Server" in settings.keys()):
+				if("Port" in settings["Server"].keys()):
+					self.PORT = settings["Server"]["Port"];
+				else:
+					printWarning("Missing Port in Config File, using 62626");
 			else:
-				printWarning("Missing Port in Config File, using 62626");
-		else:
-			printWarning("Invalid Configfile. Using default values only.");
-		
+				printError("Invalid Configfile.");
+				printWarning("Using default values only.");
+		except ValueError as e:
+			printError("Invalid Configfile.");
+			printWarning("Using default values only.");
+
+			
 		
 
 	#Constructor
@@ -30,9 +36,9 @@ class MissionControl():
 		try:
 			configfile = open(self.CONFIGPATH, 'r');
 			self.setUp(configfile.read());
-		except:
+		except IOError as e:
 			printError("No config file found.");
-			printWarning("proceeding with default values");
+			printWarning("Proceeding with default values");
 
 
 	#Running Functions
