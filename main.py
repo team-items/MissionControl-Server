@@ -10,6 +10,7 @@ from termcolor import colored
 class MissionControl():
 	CONFIGPATH = "config.conf";
 	PORT = 62626;
+	SAMPLERATE = 0.01;
 
 	#Setup functions 
 	def setUp(self, configs):
@@ -17,18 +18,24 @@ class MissionControl():
 			settings = json.loads(configs);
 
 			if("Server" in settings.keys()):
-				if("Port" in settings["Server"].keys()):
-					self.PORT = settings["Server"]["Port"];
+				serversettings = settings["Server"];
+				serverkeys = serversettings.keys();
+
+				if("Port" in serverkeys):
+					self.PORT = serversettings["Port"];
 				else:
 					printWarning("Missing Port in Config File, using 62626");
+				
+				if("Samplerate" in serverkeys):
+					self.SAMPLERATE = serversettings["Samplerate"];
+				else:
+					printWarning("Missing Samplerate in Config File, using 0.01s");
 			else:
 				printError("Invalid Configfile.");
 				printWarning("Using default values only.");
 		except ValueError as e:
 			printError("Invalid Configfile.");
 			printWarning("Using default values only.");
-
-			
 		
 
 	#Constructor
@@ -39,6 +46,7 @@ class MissionControl():
 		except IOError as e:
 			printError("No config file found.");
 			printWarning("Proceeding with default values");
+
 
 
 	#Running Functions
