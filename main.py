@@ -37,6 +37,10 @@ class MissionControl():
 			printError("Invalid Configfile.");
 			printWarning("Using default values only.");
 		
+	def printStartupConfig(self):
+		printInfo("Config used: "+`self.CONFIGPATH`);
+		printInfo("Port used: "+`self.PORT`);
+		printInfo("Samplerate used: "+`self.SAMPLERATE`);
 
 	#Constructor
 	def __init__(self):
@@ -47,6 +51,8 @@ class MissionControl():
 			printError("No config file found.");
 			printWarning("Proceeding with default values");
 
+		self.printStartupConfig();
+		printSuccess("Setting up server");
 
 
 	#Running Functions
