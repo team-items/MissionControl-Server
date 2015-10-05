@@ -44,7 +44,7 @@ def testClient():
 		response = json.loads(respStream.decode('utf8'))
 		
 		if ("ConnACK" in response.keys()):
-			printSuccess("recieved Acknoledgement package")
+			printSuccess("ConnACK message")
 			ack = response["ConnACK"]
 
 			if ("ChosenCrypto" in ack.keys()):
@@ -56,11 +56,16 @@ def testClient():
 			respStream = s.recv(2048)
 
 			if respStream:
-				print(respStream.decode("utf8"))
 				lao = json.loads(respStream.decode('utf8'))
 
 				#storage stuff goes here
 				handshakeSucceeded = True
+
+				s.send('{ "ConnSTT" : "" }');
+				while True:
+					data = s.recv(2048);
+					print(data.decode('utf8'));
+					time.sleep(0.005);
 			else:
 				printError("No answer from the server")
 
