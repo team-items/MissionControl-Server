@@ -1,6 +1,8 @@
 #First Party Libraries
+import sys
 import socket
 import json
+import time
 
 #Own Libraries
 from mclib import *
@@ -57,7 +59,7 @@ def testClient():
 				print(respStream.decode("utf8"))
 				lao = json.loads(respStream.decode('utf8'))
 
-				//storage stuff goes here
+				#storage stuff goes here
 				handshakeSucceeded = True
 			else:
 				printError("No answer from the server")
@@ -78,5 +80,11 @@ def testClient():
 		
 	if (handshakeSucceeded):
 		printSuccess("Handshake succeeded; ready for transmissions")
+		print(host)
+		print(port)
+		print(size)
+		print(crypto)
 
 	s.close()
+
+testClient()

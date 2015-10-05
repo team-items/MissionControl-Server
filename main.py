@@ -16,7 +16,7 @@ class MissionControl():
 	PORT = 62626;
 	SAMPLERATE = 0.01;
 
-	HOST = '';
+	HOST = 'localhost';
 	BACKLOG = 10;
 	SIZE = 2048;
 	SERVER = None;
