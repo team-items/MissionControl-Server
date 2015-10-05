@@ -4,6 +4,7 @@ import sys
 import select
 import socket
 import base64
+import time
 
 #Own Libraries
 from mclib import *
@@ -23,6 +24,8 @@ class MissionControl():
 
 	INPUT = None; #list of inputs
 	OUTPUT = None; #list of sockets ready for output
+
+	clientStatusList = [];
 
 	#Setup functions 
 	def setUpConfig(self, configs):
@@ -90,32 +93,68 @@ class MissionControl():
 
 	#Running Functions
 
-	def handleConnectReq():
+	def handleConnectReq(self):
 		client, address = self.SERVER.accept();
 		client.setblocking(0);
 		self.INPUT.append(client);
+		self.OUTPUT.append(client);
+		self.clientStatusList.append(0);
 		printInfo("New Client connected");
+
+	def requestOkay(self, msg):
+		return True;
 
 	def run(self):
 		running = True;
 		printSuccess("Server up and running");
+		blocked = False;
 
 		while running:
 			inputready, outputready, exceptready = select.select(self.INPUT, self.OUTPUT, []);
 
 			for sock in inputready:
 				if sock == self.SERVER:
-					handleConnectReq();
+					self.handleConnectReq();
 				else:
+					clientIndex = self.INPUT.index(sock)-1;
 					data = sock.recv(self.SIZE);
 					if data:
-						print(data.decode("utf-8"))
+						indat = data.decode("utf-8");
+						if(indat[:1] == "{"):
+							msg = json.loads(indat);
+							if("ConnREQ" in msg and self.clientStatusList[clientIndex] == 0):
+								if(self.requestOkay(msg)):
+									self.clientStatusList[clientIndex] = 1;
+									printWarning("New Client Handshake Request");
+							if("ConnSTT" in msg and self.clientStatusList[clientIndex] == 3):
+								self.clientStatusList[clientIndex] = 4;
+							if("Control" in msg and self.clientStatusList[clientIndex] == 4):
+								printInfo("Received Control Command");
+
 					else:
 						sock.close();
 						printWarning("Connection closed");
 						if sock in self.OUTPUT:
-							output.remove(sock);
+							self.OUTPUT.remove(sock);
+						self.clientStatusList.pop(self.INPUT.index(sock)-1);
 						self.INPUT.remove(sock);
+						blocked = True;
+
+			if not blocked:
+				for sock in outputready:
+					if sock != self.SERVER:
+						clientIndex = self.OUTPUT.index(sock);
+						if(self.clientStatusList[clientIndex] == 1):
+							sock.send('{ "ConnACK" : { "ChosenCrypto" : "None" } }'.encode());
+							self.clientStatusList[clientIndex] = 2;
+						elif(self.clientStatusList[clientIndex] == 2):
+							sock.send('{ "ConnLAO" : {  "Information" : {   "SomeFloatNumber" : {    "DataType" : "Float",    "MinBound" : -1023.9999999,    "MaxBound" : 1023.9999999,    "Graph"  : 20   },   "SomeIntegerNumber" : {    "DataType" : "Integer",    "MinBound" : 0,    "MaxBound" : 1023   },   "SomeStatusString" : {    "DataType" : "String",    "MinLength" : 0,    "MaxLength" : 200   }   } }}'.encode())
+							self.clientStatusList[clientIndex] = 3;
+						elif(self.clientStatusList[clientIndex] == 4):
+							sock.send('New Values!!');
+
+			time.sleep(0.005)
+			blocked = False;
 
 
 mc = MissionControl();
