@@ -126,6 +126,9 @@ class MissionControl():
 								if(self.requestOkay(msg)):
 									self.clientStatusList[clientIndex] = 1;
 									printWarning("New Client Handshake Request");
+								else:
+									self.clientStatusList[clientIndex] = -1;
+									printWarning("Requesting Client does not fulfill requested standards");
 							if("ConnSTT" in msg and self.clientStatusList[clientIndex] == 3):
 								self.clientStatusList[clientIndex] = 4;
 							if("Control" in msg and self.clientStatusList[clientIndex] == 4):
