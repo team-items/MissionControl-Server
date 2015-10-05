@@ -86,7 +86,16 @@ class MissionControl():
 		printInfo("Setting up server");
 		self.setUpServer();
 
+
+
 	#Running Functions
+
+	def handleConnectReq():
+		client, address = self.SERVER.accept();
+		client.setblocking(0);
+		self.INPUT.append(client);
+		printInfo("New Client connected");
+
 	def run(self):
 		running = True;
 		printSuccess("Server up and running");
@@ -94,6 +103,19 @@ class MissionControl():
 		while running:
 			inputready, outputready, exceptready = select.select(self.INPUT, self.OUTPUT, []);
 
+			for sock in inputready:
+				if sock == self.SERVER:
+					handleConnectReq();
+				else:
+					data = sock.recv(self.SIZE);
+					if data:
+						print(data.decode("utf-8"))
+					else:
+						sock.close();
+						printWarning("Connection closed");
+						if sock in self.OUTPUT:
+							output.remove(sock);
+						self.INPUT.remove(sock);
 
 
 mc = MissionControl();
