@@ -156,7 +156,7 @@ class MissionControl():
 						elif(self.clientStatusList[clientIndex] == 4):
 							sock.send('New Values!!');
 
-			time.sleep(0.005)
+			time.sleep(self.SAMPLERATE);
 			blocked = False;
 
 
