@@ -1,21 +1,21 @@
 from termcolor import colored;
 
 def coloredPrint(text, color):
-	if(color == 'grey' or color == 'red' or color == 'green' or color == 'yellow' or color == 'blue' or color == 'magenta' or color == 'cyan' or color == 'white'):
+	if(color in ['grey','red','green','yellow','blue','magenta','cyan','white']):
 		print(colored(text, color));
 	elif(color == 'black'):
 		print(text);
 	else:
 		raise UserWarning('Given color not supported');
 
-def printWarning(text):
+def warning(text):
 	print(colored("[Warning] "+text, 'yellow'));
 
-def printError(text):
+def error(text):
 	print(colored("[Error] "+text, 'red'));
 
-def printSuccess(text):
+def success(text):
 	print(colored("[Success] "+text, 'green'));
 
-def printInfo(text):
+def info(text):
 	print(colored("[Info] "+text, 'grey'))

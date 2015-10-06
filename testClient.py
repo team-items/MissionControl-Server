@@ -5,7 +5,7 @@ import json
 import time
 
 #Own Libraries
-from mclib import *
+import Debug
 
 #Third Party Libraries
 from termcolor import colored
@@ -44,13 +44,13 @@ def testClient():
 		response = json.loads(respStream.decode('utf8'))
 		
 		if ("ConnACK" in response.keys()):
-			printSuccess("ConnACK message")
+			Debug.success("ConnACK message")
 			ack = response["ConnACK"]
 
 			if ("ChosenCrypto" in ack.keys()):
 				crypto = ack["ChosenCrypto"]
 			else:
-				printWarning("Missing ChosenCrypto in ConnACK using default: none")
+				Debug.warning("Missing ChosenCrypto in ConnACK using default: none")
 
 			time.sleep(0.005)
 			respStream = s.recv(2048)
@@ -67,21 +67,21 @@ def testClient():
 					print(data.decode('utf8'));
 					time.sleep(0.005);
 			else:
-				printError("No answer from the server")
+				Debug.error("No answer from the server")
 
 		elif ("ConnREJ" in response.keys()):
 			rej = response["ConnREJ"]
 
 			if ("Error" in rej.keys()):
-				printError(rej["Error"])
+				Debug.error(rej["Error"])
 			else:
-				printWarning('Missing Error in ConnREJ')
+				Debug.warning('Missing Error in ConnREJ')
 
 		else:
-			printError("no response from the server")
+			Debug.error("no response from the server")
 
 	else:
-		printError("No answer from the server")
+		Debug.error("No answer from the server")
 		
 	if (handshakeSucceeded):
 		printSuccess("Handshake succeeded; ready for transmissions")
