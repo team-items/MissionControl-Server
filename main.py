@@ -5,12 +5,13 @@ import select
 import socket
 import base64
 import time
+import __future__
+import Queue
 
 #Own Libraries
-import Debug
+from Logger import Logger
 
 #Third Party Libraries
-from termcolor import colored
 
 class MissionControl():
 	CONFIGPATH = "config.conf";
@@ -27,6 +28,9 @@ class MissionControl():
 
 	clientStatusList = [];
 
+	DATA = Queue.Queue();
+	log = Logger('logfile.log');
+
 	#Setup functions 
 	def setUpConfig(self, configs):
 		try:
@@ -39,23 +43,23 @@ class MissionControl():
 				if("Port" in serverkeys):
 					self.PORT = serversettings["Port"];
 				else:
-					Debug.warning("Missing Port in Config File, using 62626");
+					self.log.printWarning("Missing Port in Config File, using 62626");
 				
 				if("Samplerate" in serverkeys):
 					self.SAMPLERATE = serversettings["Samplerate"];
 				else:
-					Debug.warning("Missing Samplerate in Config File, using 0.01s");
+					self.log.printWarning("Missing Samplerate in Config File, using 0.01s");
 			else:
-				Debug.error("Invalid Configfile.");
-				Debug.warning("Using default values only.");
+				self.log.printError("Invalid Configfile.");
+				self.log.printWarning("Using default values only.");
 		except ValueError as e:
-			Debug.error("Invalid Configfile.");
-			Debug.warning("Using default values only.");
+			self.log.printError("Invalid Configfile.");
+			self.log.printWarning("Using default values only.");
 		
 	def printStartupConfig(self):
-		Debug.info("Config used: "+`self.CONFIGPATH`);
-		Debug.info("Port used: "+`self.PORT`);
-		Debug.info("Samplerate used: "+`self.SAMPLERATE`);
+		self.log.printMessage("Config used: "+`self.CONFIGPATH`);
+		self.log.printMessage("Port used: "+`self.PORT`);
+		self.log.printMessage("Samplerate used: "+`self.SAMPLERATE`);
 
 
 	def setUpServer(self):
@@ -64,17 +68,17 @@ class MissionControl():
 			self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
 			self.SERVER.bind((self.HOST, self.PORT));
 			self.SERVER.listen(self.BACKLOG);
-			Debug.success("Socket set up");
+			self.log.printSuccess("Socket set up");
 		except socket.error:
 			if self.SERVER:
 				self.SERVER.close();
-			Debug.error("Could not open socket: "+sys.exc_info()[1]);
+			self.log.printError("Could not open socket: "+sys.exc_info()[1]);
 			sys.exit(1);
 
 		self.INPUT = [self.SERVER];
 		self.OUTPUT = [];
 
-		Debug.success("Finished setting up Server");
+		self.log.printSuccess("Finished setting up Server");
 
 	#Constructor
 	def __init__(self):
@@ -82,16 +86,23 @@ class MissionControl():
 			configfile = open(self.CONFIGPATH, 'r');
 			self.setUpConfig(configfile.read());
 		except IOError as e:
-			Debug.error("No config file found.");
-			Debug.warning("Proceeding with default values");
+			self.log.printError("No config file found.");
+			self.log.printWarning("Proceeding with default values");
 
 		self.printStartupConfig();
-		Debug.info("Setting up server");
+		self.log.printMessage("Setting up server");
 		self.setUpServer();
 
 
 
 	#Running Functions
+	def getData(self):
+		lastData = None;
+		while(not self.DATA.empty()):
+			lastData = self.DATA.get();
+
+		return lastData;
+
 
 	def handleConnectReq(self):
 		client, address = self.SERVER.accept();
@@ -99,14 +110,14 @@ class MissionControl():
 		self.INPUT.append(client);
 		self.OUTPUT.append(client);
 		self.clientStatusList.append(0);
-		Debug.info("New Client connected");
+		self.log.printMessage("New Client connected");
 
 	def requestOkay(self, msg):
 		return True;
 
 	def run(self):
 		running = True;
-		Debug.success("Server up and running");
+		self.log.printSuccess("Server up and running");
 		blocked = False;
 
 		while running:
@@ -126,19 +137,19 @@ class MissionControl():
 								if("ConnREQ" in msg and self.clientStatusList[clientIndex] == 0):
 									if(self.requestOkay(msg)):
 										self.clientStatusList[clientIndex] = 1;
-										Debug.warning("Client "+`clientIndex`+": Handshake Request");
+										self.log.printWarning("Client "+`clientIndex`+": Handshake Request");
 									else:
 										self.clientStatusList[clientIndex] = -1;
-										Debug.warning("Requesting Client ("+`clientIndex`+") does not fulfill requested standards");
+										self.log.printWarning("Requesting Client ("+`clientIndex`+") does not fulfill requested standards");
 								if("ConnSTT" in msg and self.clientStatusList[clientIndex] == 3):
 									self.clientStatusList[clientIndex] = 4;
-									Debug.warning("Client "+`clientIndex`+": Handshake succeeded")
+									self.log.printWarning("Client "+`clientIndex`+": Handshake succeeded")
 								if("Control" in msg and self.clientStatusList[clientIndex] == 4):
-									Debug.info("Received Control Command from "+`clientIndex`);
+									self.log.printMessage("Received Control Command from "+`clientIndex`);
 
 						else:
 							sock.close();
-							Debug.warning("Client "+`clientIndex`+": Connection closed");
+							self.log.printWarning("Client "+`clientIndex`+": Connection closed");
 							if sock in self.OUTPUT:
 								self.OUTPUT.remove(sock);
 							self.clientStatusList.pop(self.INPUT.index(sock)-1);
@@ -158,7 +169,12 @@ class MissionControl():
 							sock.send('{ "ConnLAO" : {  "Information" : {   "SomeFloatNumber" : {    "DataType" : "Float",    "MinBound" : -1023.9999999,    "MaxBound" : 1023.9999999,    "Graph"  : 20   },   "SomeIntegerNumber" : {    "DataType" : "Integer",    "MinBound" : 0,    "MaxBound" : 1023   },   "SomeStatusString" : {    "DataType" : "String",    "MinLength" : 0,    "MaxLength" : 200   }   } }}'.encode())
 							self.clientStatusList[clientIndex] = 3;
 						elif(self.clientStatusList[clientIndex] == 4):
-							sock.send('New Values!!');
+							returningData = self.getData();
+							if(returningData == None):
+								sock.send('No new data'.encode());
+							else:
+								sock.send(returningData.encode());
+
 
 			time.sleep(self.SAMPLERATE);
 			blocked = False;
