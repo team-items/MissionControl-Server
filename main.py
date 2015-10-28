@@ -37,8 +37,13 @@ clients = ClientManager(server, log, conf);
 
 running = True;
 while running:
-	clients.update();
-	clients.handleHandshake();
-	clients.handleInput();
-	clients.handleOutput();
-	time.sleep(conf.SAMPLERATE)
+	try:
+		clients.update();
+		clients.handleHandshake();
+		clients.handleInput();
+		clients.handleOutput();
+		time.sleep(conf.SAMPLERATE);
+	except KeyboardInterrupt:
+		server.close();
+		log.logAndPrintWarning("Server manually stopped");
+		sys.exit();
