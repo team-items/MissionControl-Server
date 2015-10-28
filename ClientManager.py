@@ -3,6 +3,7 @@ import select
 import socket
 
 from Client import Client 
+from ConfigHandler import ConfigHandler
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
 
 class ClientManager():
@@ -13,13 +14,15 @@ class ClientManager():
 	newConnectedId = 0;
 
 	log = None;
+	conf = None;
 
-	def __init__(self, server, log):
+	def __init__(self, server, log, conf):
 		self.clients = [];
 		self.inputready = [];
 		self.outputready = [];
 		self.server = server;
 		self.log = log;
+		self.conf = conf;
 
 	def getClientsSockets(self, added):
 		sockets = added;
@@ -49,7 +52,7 @@ class ClientManager():
 		client, address = self.server.accept();
 		client.setblocking(0);
 
-		self.clients.append(Client(client, 2048, address[0], address[1], self.newConnectedId));
+		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId));
 
 		self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
 		self.newConnectedId+=1;
@@ -71,7 +74,7 @@ class ClientManager():
 				self.handleConnect();
 			else:
 				try:
-					data = sock.recv(2048);
+					data = sock.recv(self.conf.SEGMENT_SIZE);
 					if data:
 						#add controlling function here
 						print(data.decode("utf-8"));

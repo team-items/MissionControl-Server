@@ -33,7 +33,7 @@ except socket.error:
 
 log.logAndPrintSuccess("Server running!");
 
-clients = ClientManager(server, log);
+clients = ClientManager(server, log, conf);
 
 running = True;
 while running:
