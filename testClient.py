@@ -61,7 +61,7 @@ def testClient():
 				#storage stuff goes here
 				handshakeSucceeded = True
 
-				s.send('{ "ConnSTT" : "" }');
+				s.send('{ "ConnSTT" : "" }'.encode('utf8'));
 				while True:
 					data = s.recv(2048);
 					print(data.decode('utf8'));
