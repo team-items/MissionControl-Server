@@ -21,6 +21,7 @@ class ConfigHandler():
 		config = json.loads(open(self.CONFIGPATH, 'r').read());
 		
 		if "Server" in config:
+			config = config["Server"];
 			if "Port" in config:
 				self.PORT = config["Port"];
 			else:
@@ -52,7 +53,5 @@ class ConfigHandler():
 		self.log.logAndPrintMessage("Running config: \nCONFIGPATH "+self.CONFIGPATH+
 			"\nPORT "+`self.PORT`+"\nSAMPLERATE "+`self.SAMPLERATE`+"\nHOST "+self.HOST+
 			"\nBACKLOG "+`self.BACKLOG`+"\nSEGMENT_SIZE "+`self.SEGMENT_SIZE`)
-
-
 
 
