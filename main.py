@@ -65,14 +65,14 @@ class MissionControl():
 	def setUpServer(self):
 		try:
 			self.SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-			self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
+			self.SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			self.SERVER.bind((self.HOST, self.PORT));
 			self.SERVER.listen(self.BACKLOG);
 			self.log.printSuccess("Socket set up");
 		except socket.error:
 			if self.SERVER:
 				self.SERVER.close();
-			self.log.printError("Could not open socket: "+sys.exc_info()[1]);
+			self.log.printError("Could not open socket: "+`sys.exc_info()[1]`);
 			sys.exit(1);
 
 		self.INPUT = [self.SERVER];
