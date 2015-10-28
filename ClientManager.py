@@ -73,6 +73,7 @@ class ClientManager():
 				try:
 					data = sock.recv(2048);
 					if data:
+						#add controlling function here
 						print(data.decode("utf-8"));
 					else:
 						self.inputready.remove(sock);
