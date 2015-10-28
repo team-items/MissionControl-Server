@@ -5,15 +5,20 @@ import json
 
 from Connectable import Connectable
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
+from Logger import Logger;
 
 class Client(Connectable):
 	controllable = False;
 	midac = None;
+	connectingId = None;
 
-	def __init__(self, socket, size):
+	def __init__(self, socket, size, address, port, connectingId):
 		self.socket = socket;
 		self.messageSize = size;
 		self.midac = MIDaCSerializer();
+		self.address = address;
+		self.port = port;
+		self.connectingId = connectingId;
 
 	def receiveAndDecode(self):
 		return self.socket.recv(self.messageSize).decode("utf-8");
@@ -25,7 +30,8 @@ class Client(Connectable):
 		if not self.established:
 			if self.handshakeStatus == 0:
 				msg = json.loads(self.receiveAndDecode());
-				if self.midac.getMessageType(msg) == MSGType.ConnREQ:
+
+				if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
 					self.handshakeStatus = 1;
 
 			elif self.handshakeStatus == 1:
@@ -34,7 +40,7 @@ class Client(Connectable):
 
 			elif self.handshakeStatus == 2:
 				#Creating test MIDaC Conn LAO here
-				ananlog = self.midac.GenerateIntegerLAO("Analog1", 0, 1023, 30);
+				analog = self.midac.GenerateIntegerLAO("Analog1", 0, 1023, 30);
 				analog.update(self.midac.GenerateIntegerLAO("Analog2", 0, 1023, 30));
 				digital = self.midac.GenerateBoolLAO("Digital1");
 				digital.update(self.midac.GenerateBoolLAO("Digital2"));
@@ -50,8 +56,8 @@ class Client(Connectable):
 				self.handshakeStatus = 3;
 
 			else:
-				msg = json.loads(self.receiveAndDecode)
-				if self.midac.getMessageType(msg) == MSGType.ConnSTT:
+				msg = json.loads(self.receiveAndDecode())
+				if self.midac.GetMessageType(msg) == MSGType.ConnSTT:
 					self.established = True;
 
 		else:
