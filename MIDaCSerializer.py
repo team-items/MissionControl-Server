@@ -1,3 +1,5 @@
+import json
+
 class MSGType():
 	ConnREQ = 1;
 	ConnACK = 2;
@@ -12,11 +14,12 @@ class MIDaCSerializationException(Exception):
 	def __str__(self):
 		return "MIDaC Serialization Exception for "+repr(self.value);
 
-import json
 
 class MIDaCSerializer():
 
 	def GetMessageType(self, msg):
+		if type(msg) is str:
+			json.loads(msg);
 		if type(msg) is dict:
 			if "ConnLAO" in msg:
 				return MSGType.ConnLAO;
@@ -126,7 +129,4 @@ class MIDaCSerializer():
 			}
 		}
 		return ButtonLAO
-
-
-
 
