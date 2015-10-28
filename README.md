@@ -1,6 +1,2 @@
 # MissionControl-Server
-
-
-
-#Used Plugins (Required for installation, needed to be bundled in release versions)
-termcolor
+It's getting fancy in here (full implementation of standard MIDaC Server incoming)
