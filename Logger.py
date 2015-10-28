@@ -70,3 +70,6 @@ class Logger():
 	def logAndPrintMessage(self, text):
 		self.logMessage(text);
 		self.printMessage(text);
+
+	def clearLogfile(self):
+		open(self.logfile_location, 'w').close();
