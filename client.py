@@ -8,7 +8,7 @@ from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerialize
 from Logger import Logger;
 
 class Client(Connectable):
-	controllable = False;
+	controllable = True;
 	midac = None;
 	connectingId = None;
 

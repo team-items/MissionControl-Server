@@ -50,8 +50,9 @@ class ConfigHandler():
 		else:
 			self.log.logAndPrintError("Invalid config file, using default values");
 
-		self.log.logAndPrintMessage("Running config: \nCONFIGPATH "+self.CONFIGPATH+
-			"\nPORT "+`self.PORT`+"\nSAMPLERATE "+`self.SAMPLERATE`+"\nHOST "+self.HOST+
-			"\nBACKLOG "+`self.BACKLOG`+"\nSEGMENT_SIZE "+`self.SEGMENT_SIZE`)
+		ph = "                            ";#placeholder string for better looking output
 
+		self.log.logAndPrintMessage("Running config: \n"+ph+"CONFIGPATH "+self.CONFIGPATH+
+			"\n"+ph+"PORT "+`self.PORT`+"\n"+ph+"SAMPLERATE "+`self.SAMPLERATE`+"\n"+ph+"HOST "+self.HOST+
+			"\n"+ph+"BACKLOG "+`self.BACKLOG`+"\n"+ph+"SEGMENT_SIZE "+`self.SEGMENT_SIZE`)
 

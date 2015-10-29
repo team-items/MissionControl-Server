@@ -3,7 +3,6 @@ import select;
 import socket;
 import time;
 
-
 #Own Libraries
 from Logger import Logger
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
@@ -12,13 +11,12 @@ from ConfigHandler import ConfigHandler;
 
 server = None;
 
+print("MissionControl Server (MIDaC V2)\n");
+
 log = Logger("eventlog.log");
 conf = ConfigHandler("config.conf", log);
 
-log.printWarning("Clearing logfile");
-log.clearLogfile();
 log.logAndPrintMessage("Setting up server");
-
 
 try:
 	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM);

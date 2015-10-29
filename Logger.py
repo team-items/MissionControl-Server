@@ -11,6 +11,7 @@ class Logger():
 
 	def __init__(self, logfile_location):
 		self.logfile_location = logfile_location;
+		self.clearLogfile();
 
 	def logWithTime(self, text):
 		with open(self.logfile_location, "a") as logfile:
@@ -72,4 +73,5 @@ class Logger():
 		self.printMessage(text);
 
 	def clearLogfile(self):
+		self.printWarning("Clearing logfile");
 		open(self.logfile_location, 'w').close();
