@@ -1,5 +1,7 @@
 from Logger import Logger
 import json
+import os
+from sys import platform as _platform
 
 class ConfigHandler():
 	CONFIGPATH = "config.conf";
@@ -10,6 +12,14 @@ class ConfigHandler():
 	SEGMENT_SIZE = 2048;
 
 	log = None;
+
+	def get_host(self):
+		if _platform == "linux" or _platform == "linux2":
+			self.HOST = os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip();
+		if _platform == "darwin":
+			self.HOST = os.popen('ifconfig en0 | grep "inet " | cut -d" " -f2 | cut -d" " -f1').read().strip();
+		if _platform == "win32" or _platform == "win64":
+			self.log.logAndPrintWarning("Platform not supported, using 'localhost' for host");
 
 	def __init__(self, path, log):
 		self.log = log;
@@ -32,11 +42,6 @@ class ConfigHandler():
 			else:
 				self.log.logAndPrintWarning("No samplerate in configfile, using default");
 
-			if "Host" in config:
-				self.HOST = config["Host"];
-			else:
-				self.log.logAndPrintWarning("No host in configfile, using default");
-
 			if "Backlog" in config:
 				self.BACKLOG = config["Backlog"];
 			else:
@@ -47,6 +52,7 @@ class ConfigHandler():
 			else:
 				self.log.logAndPrintWarning("No segment size in configfile, using default");
 
+			self.get_host();
 		else:
 			self.log.logAndPrintError("Invalid config file, using default values");
 
