@@ -36,8 +36,8 @@ class MIDaCSerializer():
 		else:
 			raise MIDaCSerializationException(msg);
 
-	def GenerateConnACK(self, crypto):
-		ConnACK = {"ConnACK" : {"ChosenCrypto" : crypto}};
+	def GenerateConnACK(self, crypto, size):
+		ConnACK = {"ConnACK" : {"ChosenCrypto" : crypto, "SegmentSize" : size}};
 		return json.dumps(ConnACK);
 
 	def GenerateConnLAO(self, integers, floats, bools, strings, sliders, buttons):

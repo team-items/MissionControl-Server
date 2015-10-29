@@ -11,14 +11,16 @@ class Client(Connectable):
 	controllable = True;
 	midac = None;
 	connectingId = None;
+	conf = None
 
-	def __init__(self, socket, size, address, port, connectingId):
+	def __init__(self, socket, size, address, port, connectingId, conf):
 		self.socket = socket;
 		self.messageSize = size;
 		self.midac = MIDaCSerializer();
 		self.address = address;
 		self.port = port;
 		self.connectingId = connectingId;
+		self.conf = conf
 
 	def receiveAndDecode(self):
 		return self.socket.recv(self.messageSize).decode("utf-8");
@@ -35,7 +37,7 @@ class Client(Connectable):
 					self.handshakeStatus = 1;
 
 			elif self.handshakeStatus == 1:
-				self.sendAndEncode(self.midac.GenerateConnACK("None"));
+				self.sendAndEncode(self.midac.GenerateConnACK("None", self.conf.SEGMENT_SIZE));
 				self.handshakeStatus = 2;
 
 			elif self.handshakeStatus == 2:

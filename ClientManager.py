@@ -52,7 +52,7 @@ class ClientManager():
 		client, address = self.server.accept();
 		client.setblocking(0);
 
-		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId));
+		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf));
 
 		self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
 		self.newConnectedId+=1;
