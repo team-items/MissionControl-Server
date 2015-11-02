@@ -31,7 +31,8 @@ class Client(Connectable):
 	def performHandshake(self):
 		if not self.established:
 			if self.handshakeStatus == 0:
-				msg = json.loads(self.receiveAndDecode());
+				inputMSG = self.receiveAndDecode();
+				msg = json.loads(inputMSG);
 
 				if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
 					self.handshakeStatus = 1;

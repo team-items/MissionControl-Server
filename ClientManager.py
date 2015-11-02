@@ -12,6 +12,7 @@ class ClientManager():
 	outputready = None;
 	server = None;
 	newConnectedId = 0;
+	rsal = None;
 
 	log = None;
 	conf = None;
@@ -52,10 +53,17 @@ class ClientManager():
 		client, address = self.server.accept();
 		client.setblocking(0);
 
-		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf));
+		if address[0] == self.conf.HOST and self.rsal == None:
+			self.log.logAndPrintSuccess("RSAL connected");
+			self.rsal = client;
+		elif self.rsal != None:
+			self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf));
 
-		self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
-		self.newConnectedId+=1;
+			self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
+			self.newConnectedId+=1;
+		else:
+			self.server.refuse();
+			self.log.logAndPrintError("Client tried to connect before RSAL connection was established");
 
 	def handleHandshake(self):
 		for client in self.getHandshakeSockets():
