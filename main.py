@@ -2,6 +2,7 @@ import sys;
 import select;
 import socket;
 import time;
+from subprocess import Popen
 
 #Own Libraries
 from Logger import Logger
@@ -11,7 +12,7 @@ from ConfigHandler import ConfigHandler;
 
 server = None;
 
-print("MissionControl Server (MIDaC V2)\n");
+print("MissionControl Server (MIDaC V1)\n");
 
 log = Logger("eventlog.log");
 conf = ConfigHandler("config.conf", log);
@@ -33,6 +34,8 @@ log.logAndPrintSuccess("Server running!");
 
 clients = ClientManager(server, log, conf);
 
+p = Popen(['./RSAL']);
+
 running = True;
 while running:
 	try:
@@ -45,3 +48,4 @@ while running:
 		server.close();
 		log.logAndPrintWarning("Server manually stopped");
 		sys.exit();
+		p.terminate();

@@ -1,7 +1,7 @@
 #First Party Libraries
 import sys
 import socket
-import json
+import simplejson as json
 import time
 
 #Own Libraries
