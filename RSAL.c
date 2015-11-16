@@ -17,7 +17,7 @@ Version 0.1
     #   error "Unknown Apple platform"
     #endif
 #elif __linux__
- 	#define Platform 1
+    #define Platform 1
 #elif __unix__ // all unices not caught above
 #   error "Not supported platform"
 #elif defined(_POSIX_VERSION)
@@ -25,6 +25,15 @@ Version 0.1
 #else
 #   error "Unknown compiler"
 #endif
+
+#ifndef msleep
+    #include <unistd.h>
+    void msleep(int time){
+        usleep(time*1000);
+    }
+#endif
+#define true 1
+#define false 0
 
 #include <stdio.h>
 #include <unistd.h>
@@ -41,26 +50,28 @@ Version 0.1
 int socket_desc;
 struct sockaddr_in server;
 char *message , server_reply[2048];
+int errorCounter = 0;
 
-void sendMessage(char message[]){
-	if( send(socket_desc , message , strlen(message) , 0) < 0)
+void sendMessage(char* message){
+    char sendingMessage[2048];
+    strcpy(sendingMessage, message);
+
+    if( send(socket_desc , sendingMessage , strlen(message) , 0) < 0)
     {
-		printf("Sending failed\n");        
-    } else {
-		printf("Sending succeeded\n");
-	}
+        printf("RSAL_PROC_MESSAGE: Sending failed\n");  
+        errorCounter++;      
+    } 
+    msleep(10);
 }
 
 char* recvMessage(){
-	if( recv(socket_desc, server_reply , 2000 , 0) < 0)
+    if( recv(socket_desc, server_reply , 2000 , 0) < 0)
     {
-        printf("Receiving failed\n");
-    	return "Failed";
-	} else {
-		printf("Receiving successful\n");
-	}
+        printf("RSAL_PROC_MESSAGE: Receiving failed\n");
+        return "Failed";
+    } 
 
-	return server_reply;
+    return server_reply;
 }
 
 char* getIP(){
@@ -78,7 +89,7 @@ char* getIP(){
     }
     else
     {
-        strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
+        strncpy(ifr.ifr_name, "wlan0", IFNAMSIZ-1);
     }
     
     ioctl(socket_desc, SIOCGIFADDR, &ifr);
@@ -88,13 +99,11 @@ char* getIP(){
 }
 
 int main(){
-
-
-	//Create socket
+    //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
-        printf("Could not create socket");
+        //printf("RSAL_PROC_MESSAGE: Could not create socket\n");
     }
     
     server.sin_addr.s_addr = inet_addr(getIP());
@@ -104,7 +113,35 @@ int main(){
     //Connect to remote server
     if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
-        puts("connect error");
+        //puts("RSAL_PROC_MESSAGE: connect error");
         return 1;
+    }
+    //printf("RSAL_PROC_MESSAGE: Connected\n");
+
+    int status = 0;
+    while(status < 3){
+        if(status == 0){
+            sendMessage("{ \"B-Connect\" : \"\" }");
+            status = 1;
+            //printf("RSAL_PROC_MESSAGE: Sent B-Connect Message\n");
+        } else if (status == 1){
+            recvMessage();
+            status = 2;
+            //printf("RSAL_PROC_MESSAGE: Received Conn-Ack\n");
+        } else if (status == 2){
+           /*Send the connLao*/
+            sendMessage("{ \"ConnLAO\" : {    \"Information\" : { \"Integer\" : { \"Analog1\" : {     \"DataType\" : \"Integer\",     \"MaxBound\" : 2047,     \"MinBound\" : 0,     \"Graph\"  : 40 }, \"Analog2\" : {     \"DataType\" : \"Integer\",     \"MaxBound\" : 2047,     \"MinBound\" : 0,     \"Graph\"  : 40 } }, \"Bool\" : { \"Digital1\" : {     \"DataType\" : \"Bool\",     \"Graph\"  : 40 }, \"Digital2\" : {     \"DataType\" : \"Bool\",     \"Graph\"  : 40 } }     } } }");
+            status = 3;
+            //printf("RSAL_PROC_MESSAGE: Sent ConnLAO Message\n");
+        }   
+    }
+    /*two threads startoff here*/
+    int running = true;
+    while(running){
+        sendMessage("{\"Data\":{\"Analog1\":500, \"Analog2\":510, \"Digital1\": \"true\", \"Digital2\": \"false\"}}");
+
+        if(errorCounter > 10){
+            running = false;
+        }
     }
 }
