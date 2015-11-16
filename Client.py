@@ -12,15 +12,17 @@ class Client(Connectable):
 	midac = None;
 	connectingId = None;
 	conf = None
+	LAO = None;
 
-	def __init__(self, socket, size, address, port, connectingId, conf):
+	def __init__(self, socket, size, address, port, connectingId, conf, LAO):
 		self.socket = socket;
 		self.messageSize = size;
 		self.midac = MIDaCSerializer();
 		self.address = address;
 		self.port = port;
 		self.connectingId = connectingId;
-		self.conf = conf
+		self.conf = conf;
+		self.LAO = LAO;
 
 	def receiveAndDecode(self):
 		return self.socket.recv(self.messageSize).decode("utf-8");
@@ -43,19 +45,8 @@ class Client(Connectable):
 
 			elif self.handshakeStatus == 2:
 				#Creating test MIDaC Conn LAO here
-				analog = self.midac.GenerateIntegerLAO("Analog1", 0, 1023, 30);
-				analog.update(self.midac.GenerateIntegerLAO("Analog2", 0, 1023, 30));
-				digital = self.midac.GenerateBoolLAO("Digital1");
-				digital.update(self.midac.GenerateBoolLAO("Digital2"));
-				motor = self.midac.GenerateSliderLAO("Motor1", 0, 1500);
-				motor.update(self.midac.GenerateSliderLAO("Motor2", 0, 1500));
-				servo = self.midac.GenerateSliderLAO("Servo1", 0, 2047);
-				servo.update(self.midac.GenerateSliderLAO("Servo2", 0, 2047));
-				motor.update(servo);
 
-				LAO = self.midac.GenerateConnLAO(analog, None, digital, None, motor, None);
-
-				self.sendAndEncode(LAO);
+				self.sendAndEncode(json.dumps(self.LAO));
 				self.handshakeStatus = 3;
 
 			else:
