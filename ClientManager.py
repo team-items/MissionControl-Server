@@ -12,25 +12,28 @@ class ClientManager():
 	outputready = None;
 	server = None;
 	newConnectedId = 0;
-	rsal = None;
 
 	log = None;
 	conf = None;
+	LAO = None;
 
-	def __init__(self, server, log, conf):
+	def __init__(self, server, log, conf, LAO):
 		self.clients = [];
 		self.inputready = [];
 		self.outputready = [];
 		self.server = server;
 		self.log = log;
 		self.conf = conf;
+		self.LAO = LAO;
 
+	#Gets the socket descriptors of the clients, including an optional added socket descriptor
 	def getClientsSockets(self, added):
 		sockets = added;
 		for client in self.clients:
 			sockets.append(client.socket);
 		return sockets;
 
+	#get the stored client object that has the given socket descriptor 
 	def getClientBySocket(self, socket):
 		reqClient = None;
 		for client in self.clients:
@@ -53,17 +56,10 @@ class ClientManager():
 		client, address = self.server.accept();
 		client.setblocking(0);
 
-		if address[0] == self.conf.HOST and self.rsal == None:
-			self.log.logAndPrintSuccess("RSAL connected");
-			self.rsal = client;
-		elif self.rsal != None:
-			self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf));
+		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf, self.LAO));
 
-			self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
-			self.newConnectedId+=1;
-		else:
-			self.server.refuse();
-			self.log.logAndPrintError("Client tried to connect before RSAL connection was established");
+		self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
+		self.newConnectedId+=1;
 
 	def handleHandshake(self):
 		for client in self.getHandshakeSockets():
@@ -77,6 +73,7 @@ class ClientManager():
 				self.outputready.remove(client.socket);
 
 	def handleInput(self):
+		control = None;
 		for sock in self.inputready:
 			if sock == self.server:
 				self.handleConnect();
@@ -84,8 +81,10 @@ class ClientManager():
 				try:
 					data = sock.recv(self.conf.SEGMENT_SIZE);
 					if data:
-						#add controlling function here
-						print(data.decode("utf-8"));
+						#Only the longest lasting connected can send
+						if self.clients.index(self.getClientBySocket(sock)) == 0:
+							print(data.decode("utf-8"));
+							control = data.decode("utf-8");
 					else:
 						self.inputready.remove(sock);
 						self.outputready.remove(sock);
@@ -94,11 +93,12 @@ class ClientManager():
 						self.clients.remove(client);
 				except socket.error:
 					self.log.logAndPrintWarning("Socket Error");
+		return control;
 
 
-	def handleOutput(self):
+	def handleOutput(self, msg):
 		for sock in self.outputready:
-			sock.send("{'Data':{'Analog1':500, 'Analog2':510, 'Digital1': 'true', 'Digital2': 'false'}}");
+			sock.send(msg);
 
 
 
