@@ -9,6 +9,7 @@ from Logger import Logger
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
 from ClientManager import ClientManager;
 from ConfigHandler import ConfigHandler;
+from RS import RS;
 
 server = None;
 
@@ -32,20 +33,28 @@ except socket.error:
 
 log.logAndPrintSuccess("Server running!");
 
-clients = ClientManager(server, log, conf);
+rsal = RS(conf, log);
+rsal.connectRSAL(server);
+log.logAndPrintSuccess("RSAL Connected!");
 
-p = Popen(['./RSAL']);
+clients = ClientManager(server, log, conf, rsal.LAO);
 
 running = True;
 while running:
 	try:
 		clients.update();
 		clients.handleHandshake();
-		clients.handleInput();
-		clients.handleOutput();
+
+		data = rsal.handleInput();
+		if data != None:
+			clients.handleOutput(data);
+
+		control = clients.handleInput();
+		if control != None:
+			rsal.handleOutput(control);
 		time.sleep(conf.SAMPLERATE);
 	except KeyboardInterrupt:
 		server.close();
 		log.logAndPrintWarning("Server manually stopped");
 		sys.exit();
-		p.terminate();
+		rsal.rsalProcss.terminate();
