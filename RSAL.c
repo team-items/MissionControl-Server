@@ -135,6 +135,8 @@ int main(){
             //printf("RSAL_PROC_MESSAGE: Sent ConnLAO Message\n");
         }   
     }
+    //printf("RSAL_PROC_MESSAGE: Connected\n");
+    
     /*two threads startoff here*/
     int running = true;
     while(running){
