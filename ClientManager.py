@@ -2,6 +2,7 @@ import sys
 import select
 import socket
 
+import NetworkUtil as NU
 from Client import Client 
 from ConfigHandler import ConfigHandler
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
@@ -79,12 +80,12 @@ class ClientManager():
 				self.handleConnect();
 			else:
 				try:
-					data = sock.recv(self.conf.SEGMENT_SIZE);
+					data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE);
 					if data:
 						#Only the longest lasting connected can send
 						if self.clients.index(self.getClientBySocket(sock)) == 0:
-							print(data.decode("utf-8"));
-							control = data.decode("utf-8");
+							print(data);
+							control = json.dumps(data);
 					else:
 						self.inputready.remove(sock);
 						self.outputready.remove(sock);
