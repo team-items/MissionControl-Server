@@ -4,6 +4,7 @@ import select
 import json
 from subprocess import Popen
 
+import NetworkUtil as NU
 from Connectable import Connectable
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
 from Logger import Logger;
@@ -14,7 +15,6 @@ class RS(Connectable):
 	LAO = None;
 
 	def __init__(self, conf, log):
-		#dont forget to set self.socket
 		self.messageSize = conf.SEGMENT_SIZE;
 		self.conf = conf;
 		self.midac = MIDaCSerializer();
@@ -23,11 +23,10 @@ class RS(Connectable):
 	def handleInput(self):
 		inp, out, exc = select.select([self.rsalSock],[self.rsalSock],[]);
 		if len(inp) == 1:
-			return inp[0].recv(self.conf.SEGMENT_SIZE).decode("utf-8");
+			return json.dumps(NU.multiReceive(inp[0], self.conf.SEGMENT_SIZE));
 		return None;
 
 	def handleOutput(self, msg):
-		print("handling output");
 		inp, out, exc = select.select([self.rsalSock],[self.rsalSock],[]);
 		if len(out) == 1:
 			out[0].send(msg.encode())
@@ -36,10 +35,9 @@ class RS(Connectable):
 		status = 0;
 		outputs = []
 		inputs = []
-
 		inputs.append(server)
 
-		self.rsalProcss = Popen(['./RSAL'])
+		self.rsalProcss = Popen(['./RSAL/RSAL'])
 
 		while status < 3:
 			inputready, outputready, excepts = select.select(inputs, outputs, []);
@@ -52,9 +50,8 @@ class RS(Connectable):
 					outputs.append(client);
 					self.rsalSock = client;
 				else:
-					msg = socket.recv(self.conf.SEGMENT_SIZE).decode("utf-8");
-					msg = json.loads(msg);
-
+					msg = NU.multiReceive(socket, self.conf.SEGMENT_SIZE);
+					
 					if socket == self.rsalSock:
 						if self.midac.GetMessageType(msg) == MSGType.ConnB and status == 0:
 							status = 1;
