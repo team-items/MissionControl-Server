@@ -38,6 +38,7 @@ rsal.connectRSAL(server);
 log.logAndPrintSuccess("RSAL Connected!");
 
 clients = ClientManager(server, log, conf, rsal.LAO);
+log.logAndPrintSuccess("Client Manager started!");
 
 running = True;
 while running:
