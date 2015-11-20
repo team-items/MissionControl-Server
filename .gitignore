@@ -7,4 +7,5 @@ test.txt
 
 *.conf
 
-RSAL
+
+RSAL/.DS_Store
