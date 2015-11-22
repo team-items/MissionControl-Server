@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 import sys;
-import select;
 import socket;
 import time;
-from subprocess import Popen
 
 #Own Libraries
 from lib import *
