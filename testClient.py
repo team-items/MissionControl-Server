@@ -1,11 +1,22 @@
 #First Party Libraries
 import sys
+from sys import platform as _platform
+import os
 import socket
 import json
 import time
 
 
 CONFIG = '{"ConnREQ" : {"HardwareType" : "Smartphone","SupportedCrypto" : ["AES128", "RSA512"],"PreferredCrypto" : "None","SupportedDT" : ["Bool", "String", "Integer", "Slider", "Button"]}}'
+
+def get_host():
+	if _platform == "linux" or _platform == "linux2":
+		return os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip();
+	if _platform == "darwin":
+		return os.popen('ifconfig en0 | grep "inet " | cut -d" " -f2 | cut -d" " -f1').read().strip();
+	if _platform == "win32" or _platform == "win64":
+		print("Platform not supported, using 'localhost' for host");
+
 
 def multiReceive(client):
 	finished = False;
@@ -29,7 +40,7 @@ def multiReceive(client):
 def testClient():
 
 
-	host = 'localhost'
+	host = get_host();
 	port = 62626
 	size = 2048
 	s = None
