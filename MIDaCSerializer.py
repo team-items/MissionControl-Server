@@ -1,4 +1,4 @@
-import simplejson as json
+import json
 
 class MSGType():
 	ConnREQ = 1;

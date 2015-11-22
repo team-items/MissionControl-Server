@@ -1,7 +1,7 @@
 import sys
 import select
 import socket
-import simplejson as json
+import json
 
 from Connectable import Connectable
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
