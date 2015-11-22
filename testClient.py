@@ -4,13 +4,27 @@ import socket
 import json
 import time
 
-#Own Libraries
-import Debug
-
-#Third Party Libraries
-from termcolor import colored
 
 CONFIG = '{"ConnREQ" : {"HardwareType" : "Smartphone","SupportedCrypto" : ["AES128", "RSA512"],"PreferredCrypto" : "None","SupportedDT" : ["Bool", "String", "Integer", "Slider", "Button"]}}'
+
+def multiReceive(client):
+	finished = False;
+	jsonMsg = None;
+	msg = client.recv(2048).decode("utf-8");
+
+	if not msg:
+		return False;
+	while not finished:
+		try:
+			jsonMsg = json.loads(msg);
+
+			finished = True;
+		except ValueError:
+			msg = msg+client.recv(2048).decode("utf-8");
+
+			if not msg:
+				return False;
+	return jsonMsg;
 
 def testClient():
 
@@ -44,47 +58,49 @@ def testClient():
 		response = json.loads(respStream.decode('utf8'))
 		
 		if ("ConnACK" in response.keys()):
-			Debug.success("ConnACK message")
+			print("ConnACK message")
 			ack = response["ConnACK"]
 
 			if ("ChosenCrypto" in ack.keys()):
 				crypto = ack["ChosenCrypto"]
 			else:
-				Debug.warning("Missing ChosenCrypto in ConnACK using default: none")
+				print("Missing ChosenCrypto in ConnACK using default: none")
 
 			time.sleep(0.005)
-			respStream = s.recv(2048)
+			respStream = multiReceive(s)
 
 			if respStream:
-				lao = json.loads(respStream.decode('utf8'))
-
-				#storage stuff goes here
+				lao = respStream
+				print("LAO Received")
 				handshakeSucceeded = True
 
 				s.send('{ "ConnSTT" : "" }'.encode('utf8'));
+				print("ConnSTT sent")
 				while True:
+					print("receiving")
 					data = s.recv(2048);
+					print("received")
 					print(data.decode('utf8'));
 					time.sleep(0.005);
 			else:
-				Debug.error("No answer from the server")
+				print("No answer from server");
 
 		elif ("ConnREJ" in response.keys()):
 			rej = response["ConnREJ"]
 
 			if ("Error" in rej.keys()):
-				Debug.error(rej["Error"])
+				print(rej["Error"]);
 			else:
-				Debug.warning('Missing Error in ConnREJ')
+				print("Missing Error in ConnREJ")
 
 		else:
-			Debug.error("no response from the server")
+			print("No response from the server")
 
 	else:
-		Debug.error("No answer from the server")
+		print("No answer from the server")
 		
 	if (handshakeSucceeded):
-		printSuccess("Handshake succeeded; ready for transmissions")
+		print("Handshake succeeded");
 		print(host)
 		print(port)
 		print(size)
