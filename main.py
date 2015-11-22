@@ -7,11 +7,7 @@ import time;
 from subprocess import Popen
 
 #Own Libraries
-from Logger import Logger
-from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
-from ClientManager import ClientManager;
-from ConfigHandler import ConfigHandler;
-from RS import RS;
+from lib import *
 
 server = None;
 
