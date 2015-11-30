@@ -88,9 +88,7 @@ def testClient():
 				s.send('{ "ConnSTT" : "" }'.encode('utf8'));
 				print("ConnSTT sent")
 				while True:
-					print("receiving")
 					data = s.recv(2048);
-					print("received")
 					print(data.decode('utf8'));
 					time.sleep(0.005);
 			else:
