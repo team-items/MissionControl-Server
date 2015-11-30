@@ -5,19 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#ifndef msleep
-    #include <unistd.h>
-    void msleep(int time){
-        usleep(time*1000);
-    }
-#endif
-int analog(int port){
-	return 0;
-}
 
-int digital(int port){
-	return 1;
-}
+#include <kovan/kovan.h>
+
 
 char* getDigitalWrapped(int port){
 	if(digital(port)){
