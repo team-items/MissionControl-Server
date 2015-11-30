@@ -27,8 +27,9 @@ except socket.error:
 	log.logAndPrintError("Could not open socket: "+`sys.exc_info()[1]`);
 	sys.exit();
 
-rsal = RS(conf, log);
-rsal.connectRSAL();
+rsal = RS(conf, log)
+rsal.connect()
+
 log.logAndPrintSuccess("RSAL Connected!");
 
 log.logAndPrintSuccess("Server running!");
@@ -41,14 +42,15 @@ while running:
 	try:
 		clients.update();
 		clients.handleHandshake();
+		
+		control = clients.handleInput();
+		if control != None:
+			rsal.handleOutput(control);
 
 		data = rsal.handleInput();
 		if data != None:
 			clients.handleOutput(data);
 
-		control = clients.handleInput();
-		if control != None:
-			rsal.handleOutput(control);
 		time.sleep(conf.SAMPLERATE);
 	except KeyboardInterrupt:
 		server.close();

@@ -1,89 +1,81 @@
-import json
-from subprocess import Popen
 import socket
 import sys
 import os
+import json
+from subprocess import Popen
 
-import NetworkUtil as NU
 from Connectable import Connectable
-from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
-from Logger import Logger;
+from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer
+from Logger import Logger
+from ConfigHandler import ConfigHandler
 
-server_address = 'echo_socket'
+class RS():
+    server_address = 'echo_socket'
+    connection = None;
+    sock = None;
+    LAO = None;
 
-class RS(Connectable):
-	rsalSock = None;
-	rsalProcss = None;
-	LAO = None;
-	rsal = None;
+    def __init__(self, conf, log):
+        self.messageSize = conf.SEGMENT_SIZE
+        self.conf = conf
+        self.midac = MIDaCSerializer()
+        self.log = log
+        # Make sure the socket does not already exist
+        try:
+            os.unlink(self.server_address)
+        except OSError:
+            if os.path.exists(self.server_address):
+                raise
 
-	def __init__(self, conf, log):
-		self.messageSize = conf.SEGMENT_SIZE;
-		self.conf = conf;
-		self.midac = MIDaCSerializer();
-		self.log = log;
+        # Create a UDS socket
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
-		# Make sure the socket does not already exist
-		try:
-		    os.unlink(server_address)
-		except OSError:
-		    if os.path.exists(server_address):
-		        raise
+        # Bind the socket to the port
+        self.sock.bind(self.server_address)
 
-		# Create a UDS socket
-		self.rsalSock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-		self.rsalSock.bind(server_address)
+        # Listen for incoming connections
+        self.sock.listen(1)
 
+    def multiReceive(self):
+        finished = False
+        jsonMsg = None
 
-	def handleInput(self):
-		return self.multiReceive(self.rsal);
+        counter = 0
+        msg = self.connection.recv(2048).decode("utf-8")
+        msg = msg.strip(' ')
+        if not msg:
+            return False
+        while not finished:
+            try:
+                counter += 1
+                jsonMsg = json.loads(msg)
+                finished = True
+            except ValueError:
+                if counter > 10:
+                    return False
+                msg1 = self.connection.recv(2048).decode("utf-8")
+                msg = msg+msg1
 
-	def handleOutput(self, msg):
-		self.rsal.sendall(msg.encode());
+                if not msg1:
+                    return False
+        return json.dumps(jsonMsg)
 
-	def multiReceive(self, connection):
-		finished = False;
-		jsonMsg = None;
+    def handleInput(self):
+        return self.multiReceive()
 
-		counter = 0;
-		msg = connection.recv(self.conf.SEGMENT_SIZE).decode("utf-8");
-		msg = msg.strip(' ')
-		if not msg:
-			return False;
-		while not finished:
-			try:
-				counter += 1;
-				jsonMsg = json.loads(msg);
-				finished = True;
-			except ValueError:
-				if counter > 10:
-					return False;
-				msg1 = connection.recv(self.conf.SEGMENT_SIZE).decode("utf-8");
-				msg = msg+msg1;
+    def handleOutput(self, msg):
+        print("Should implement sending function!")
 
-				if not msg1:
-					return False;
-		return jsonMsg;
+    def connect(self):
+        self.rsalProcss = Popen(['./RSAL/RSAL'])
+        # Wait for a connection
+        self.connection, client_address = self.sock.accept()
 
-	def connectRSAL(self):
-		status = 0;
-		self.rsalSock.listen(1)
+        data = self.multiReceive()#Connect-B
+        #if self.midac.GetMessageType(data) == MSGType.ConnB:
 
-		self.rsalProcss = Popen(['./RSAL/RSAL'])
-
-		connection, client_address = self.rsalSock.accept()
+        self.connection.sendall(self.midac.GenerateConnACK_B().encode())#ConnACK
+        data = self.multiReceive()#ConnLAO
+        self.LAO = data
 
 
-		msg = self.multiReceive(connection);
-		if self.midac.GetMessageType(msg) == MSGType.ConnB and status == 0:
-			status = 1;
-
-		if status == 1:
-			connection.sendall(self.midac.GenerateConnACK_B().encode());
-			status = 2;
-
-		msg = self.multiReceive(connection);
-		if self.midac.GetMessageType(msg) == MSGType.ConnLAO and status == 2:
-			self.LAO = msg;
-			status = 3;
-		self.rsal = connection;
