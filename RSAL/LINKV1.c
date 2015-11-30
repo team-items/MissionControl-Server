@@ -8,6 +8,9 @@
 
 #include <kovan/kovan.h>
 
+//int digital(int wat){ return 0; }
+//int analog(int wat){ return 999; }
+
 
 char* getDigitalWrapped(int port){
 	if(digital(port)){
@@ -23,35 +26,35 @@ char* generateConnLAO(){
 
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 1.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 1.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 1.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 1.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 1.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 2.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 2.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 2.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 2.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 2.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 3.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 3.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 3.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 3.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 3.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 4.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 4.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 4.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 4.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 4.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 5.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 5.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 5.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 5.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 5.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 6.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 6.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 6.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 6.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 6.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 7.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 7.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 7.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 7.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 7.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Integer.Analog 8.DataType", "Integer");
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 8.MinBound", 0);
-    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 8.MaxType", 1023);
+    json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 8.MaxBound", 1023);
     json_object_dotset_number(root_object, "ConnLAO.Information.Integer.Analog 8.Graph", 20);
     json_object_dotset_string(root_object, "ConnLAO.Information.Bool.Digital 1.DataType", "Bool");
     json_object_dotset_number(root_object, "ConnLAO.Information.Bool.Digital 1.Graph", 20);
@@ -85,22 +88,22 @@ char* generateConnLAO(){
     json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Servo 4.MaxBound", 2047);
 
 
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 1.ControlType", "Slider");
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 1.MinBoud", 1);
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 1.MaxBound", 1500);
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 1-Button.ControlType", "Button");
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 2.ControlType", "Slider");
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 2.MinBoud", 1);
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 2.MaxBound", 1500);
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 2-Button.ControlType", "Button");
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 3.ControlType", "Slider");
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 3.MinBoud", 1);
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 3.MaxBound", 1500);
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 3-Button.ControlType", "Button");
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 4.ControlType", "Slider");
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 4.MinBoud", 1);
-    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 4.MaxBound", 1500);
-    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 4-Button.ControlType", "Button");
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 1.Motor 1 Slider.ControlType", "Slider");
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 1.Motor 1 Slider.MinBoud", 1);
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 1.Motor 1 Slider.MaxBound", 1500);
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 1.Motor 1 Button.ControlType", "Button");
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 2.Motor 2 Slider.ControlType", "Slider");
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 2.Motor 2 Slider.MinBoud", 1);
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 2.Motor 2 Slider.MaxBound", 1500);
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 2.Motor 2 Button.ControlType", "Button");
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 3.Motor 3 Slider.ControlType", "Slider");
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 3.Motor 3 Slider.MinBoud", 1);
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 3.Motor 3 Slider.MaxBound", 1500);
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 3.Motor 3 Button.ControlType", "Button");
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Slider.Motor 4.Motor 4 Slider.ControlType", "Slider");
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 4.Motor 4 Slider.MinBoud", 1);
+    json_object_dotset_number(root_object, "ConnLAO.Controller.Slider.Motor 4.Motor 4 Slider.MaxBound", 1500);
+    json_object_dotset_string(root_object, "ConnLAO.Controller.Button.Motor 4.Motor 4 Button.ControlType", "Button");
 
     return json_serialize_to_string_pretty(root_value);
 }
