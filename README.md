@@ -1,2 +1,2 @@
 # MissionControl-Server
-It's getting fancy in here (full implementation of standard MIDaC Server incoming)
+Server implementation of MIDaC, designed to transmit sensor values from (currently) the KIPR Link to client devices supporting the MIDaC Protocol. 
