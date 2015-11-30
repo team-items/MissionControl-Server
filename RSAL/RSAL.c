@@ -50,7 +50,7 @@ char* receiveMsg(){
         puts(str);
     } else {
         if (t < 0) perror("recv");
-        else printf("Server closed connection\n");
+        else printf("RSAL_PROC_MSG: Server closed connection\n");
         exit(1);
     }
 }
@@ -63,7 +63,6 @@ int main(void)
         exit(1);
     }
 
-    printf("Trying to connect...\n");
 
     remote.sun_family = AF_UNIX;
     strcpy(remote.sun_path, SOCK_PATH);
@@ -73,15 +72,10 @@ int main(void)
         exit(1);
     }
 
-    printf("Connected.\n");
-    puts("Sending B-Connect");
     sendMsg("{ \"B-Connect\" : \"\"}");
-    puts("Receiving ConnACK");
     receiveMsg();
-    puts("Sending ConnLAO");
     sendMsg(generateConnLAO());
 
-    puts("Handshaking performed");
     while(1) {
         char* msg = generateDataMsg();
         sendMsg(msg);
