@@ -88,8 +88,13 @@ def testClient():
 				s.send('{ "ConnSTT" : "" }'.encode('utf8'));
 				print("ConnSTT sent")
 				while True:
-					data = s.recv(2048);
-					print(data.decode('utf8'));
+					data = s.recv(2048).decode('utf8');
+					print(data)
+					try:
+						json.loads(data)
+						print("parseable")
+					except:
+						print("unparseable")
 					time.sleep(0.005);
 			else:
 				print("No answer from server");
