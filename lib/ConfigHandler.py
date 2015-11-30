@@ -16,6 +16,8 @@ class ConfigHandler():
 	def get_host(self):
 		if _platform == "linux" or _platform == "linux2":
 			self.HOST = os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip();
+		if _platform == "linux3":
+			self.HOST = os.popen('ifconfig wlan0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip();
 		if _platform == "darwin":
 			self.HOST = os.popen('ifconfig en0 | grep "inet " | cut -d" " -f2 | cut -d" " -f1').read().strip();
 		if _platform == "win32" or _platform == "win64":

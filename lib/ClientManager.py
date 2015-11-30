@@ -1,5 +1,6 @@
 import sys
 import select
+import json
 import socket
 
 import NetworkUtil as NU
@@ -99,7 +100,7 @@ class ClientManager():
 
 	def handleOutput(self, msg):
 		for sock in self.outputready:
-			sock.send(msg);
+			sock.send(json.dumps(msg));
 
 
 

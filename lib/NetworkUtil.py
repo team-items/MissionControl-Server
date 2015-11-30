@@ -6,6 +6,7 @@ def multiReceive(client, SEGMENT_SIZE):
 	finished = False;
 	jsonMsg = None;
 	msg = client.recv(SEGMENT_SIZE).decode("utf-8");
+
 	if not msg:
 		return False;
 	while not finished:
@@ -16,7 +17,8 @@ def multiReceive(client, SEGMENT_SIZE):
 		except ValueError:
 			inputready, outputready, excepts = select.select([client], [], []);
 			if len(inputready) == 1:
-				msg = msg+client.recv(SEGMENT_SIZE).decode("utf-8");
+				msg1 = client.recv(SEGMENT_SIZE).decode("utf-8");
+				msg = msg+msg1;
 
 				if not msg:
 					return False;
