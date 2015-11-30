@@ -47,7 +47,6 @@ void sendMsg(char* msg){
 char* receiveMsg(){
     if ((t=recv(sock, str, 2048, 0)) > 0) {
         str[t] = '\0';
-        puts(str);
     } else {
         if (t < 0) perror("recv");
         else printf("RSAL_PROC_MSG: Server closed connection\n");
