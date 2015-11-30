@@ -27,11 +27,11 @@ except socket.error:
 	log.logAndPrintError("Could not open socket: "+`sys.exc_info()[1]`);
 	sys.exit();
 
-log.logAndPrintSuccess("Server running!");
-
 rsal = RS(conf, log);
-rsal.connectRSAL(server);
+rsal.connectRSAL();
 log.logAndPrintSuccess("RSAL Connected!");
+
+log.logAndPrintSuccess("Server running!");
 
 clients = ClientManager(server, log, conf, rsal.LAO);
 log.logAndPrintSuccess("Client Manager started!");
