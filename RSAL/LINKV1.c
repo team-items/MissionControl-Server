@@ -6,10 +6,10 @@
 #include <string.h>
 #include <math.h>
 
-//#include <kovan/kovan.h>
+#include <kovan/kovan.h>
 
-int digital(int wat){ return 0; }
-int analog(int wat){ return 999; }
+//int digital(int wat){ return 0; }
+//int analog(int wat){ return 999; }
 
 JSON_Value *root_value;
 JSON_Object *root_object;
