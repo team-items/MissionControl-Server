@@ -88,8 +88,10 @@ class ClientManager():
 							print(data);
 							control = json.dumps(data);
 					else:
-						self.inputready.remove(sock);
-						self.outputready.remove(sock);
+						if(sock in self.inputready):
+							self.inputready.remove(sock);
+						if(sock in self.outputready):
+							self.outputready.remove(sock);
 						client = self.getClientBySocket(sock);
 						self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!");
 						self.clients.remove(client);
