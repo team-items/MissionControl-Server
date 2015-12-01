@@ -6,6 +6,7 @@ import socket
 import json
 import time
 
+size = 2048
 
 CONFIG = '{"ConnREQ" : {"HardwareType" : "Smartphone","SupportedCrypto" : ["AES128", "RSA512"],"PreferredCrypto" : "None","SupportedDT" : ["Bool", "String", "Integer", "Slider", "Button"]}}'
 
@@ -21,7 +22,7 @@ def get_host():
 def multiReceive(client):
 	finished = False;
 	jsonMsg = None;
-	msg = client.recv(2048).decode("utf-8");
+	msg = client.recv(size).decode("utf-8");
 
 	if not msg:
 		return False;
@@ -31,7 +32,7 @@ def multiReceive(client):
 
 			finished = True;
 		except ValueError:
-			msg = msg+client.recv(2048).decode("utf-8");
+			msg = msg+client.recv(size).decode("utf-8");
 
 			if not msg:
 				return False;
@@ -40,9 +41,8 @@ def multiReceive(client):
 def testClient():
 
 
-	host = get_host();
+	host = get_host()
 	port = 62626
-	size = 2048
 	s = None
 	crypto = None
 
@@ -62,7 +62,7 @@ def testClient():
 	
 	time.sleep(0.005)
 
-	respStream = s.recv(2048)
+	respStream = s.recv(size)
 
 	if respStream:
 		print(respStream.decode("utf8"))
@@ -88,7 +88,7 @@ def testClient():
 				s.send('{ "ConnSTT" : "" }'.encode('utf8'));
 				print("ConnSTT sent")
 				while True:
-					data = s.recv(2048).decode('utf8');
+					data = s.recv(size).decode('utf8');
 					print(data)
 					try:
 						json.loads(data)
