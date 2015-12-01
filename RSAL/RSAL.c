@@ -28,6 +28,7 @@ void sendMsg(char* msg){
         message[2048*ward] = '\0';
         if (send(sock, message, strlen(message), 0) == -1) {
             perror("send");
+            exit(1);
         }
         free(message);
     }else{
@@ -39,6 +40,7 @@ void sendMsg(char* msg){
         message[2048] = '\0';
         if (send(sock, message, strlen(message), 0) == -1) {
             perror("send");
+            exit(1);
         }
         free(message);
     }
@@ -47,6 +49,7 @@ void sendMsg(char* msg){
 char* receiveMsg(){
     if ((t=recv(sock, str, 2048, 0)) > 0) {
         str[t] = '\0';
+        return str;
     } else {
         if (t < 0) perror("recv");
         else printf("RSAL_PROC_MSG: Server closed connection\n");

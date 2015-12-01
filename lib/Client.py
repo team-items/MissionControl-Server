@@ -25,7 +25,11 @@ class Client(Connectable):
 		self.LAO = LAO;
 
 	def receiveAndDecode(self):
-		return self.socket.recv(self.messageSize).decode("utf-8");
+		try:
+			return self.socket.recv(self.messageSize).decode("utf-8");
+		except socket.error:
+			self.log.logAndPrintError("Connection reset by peer, if reocurring restart server");
+			return False
 
 	def sendAndEncode(self, msg):
 		self.socket.send(msg.encode());
@@ -34,6 +38,9 @@ class Client(Connectable):
 		if not self.established:
 			if self.handshakeStatus == 0:
 				inputMSG = self.receiveAndDecode();
+				if not inputMSG:
+					self.socket.close()
+
 				msg = json.loads(inputMSG);
 
 				if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
@@ -50,7 +57,11 @@ class Client(Connectable):
 				self.handshakeStatus = 3;
 
 			else:
-				msg = json.loads(self.receiveAndDecode())
+				inputMSG = self.receiveAndDecode();
+				if not inputMSG:
+					self.socket.close();
+
+				msg = json.loads(inputMSG);
 				if self.midac.GetMessageType(msg) == MSGType.ConnSTT:
 					self.established = True;
 
