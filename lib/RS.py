@@ -58,7 +58,7 @@ class RS():
 
                 if not msg1:
                     return False
-        return json.dumps(jsonMsg)
+        return msg
 
     def handleInput(self):
         return self.multiReceive()

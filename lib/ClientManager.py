@@ -103,7 +103,7 @@ class ClientManager():
 	def handleOutput(self, msg):
 		for sock in self.outputready:
 			try:
-				sock.send(json.dumps(msg));
+				sock.send(msg);
 			except socket.error:
 				self.log.logAndPrintError("Broken pipe warning, if reocurring restart server");
 
