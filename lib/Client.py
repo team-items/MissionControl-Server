@@ -3,6 +3,7 @@ import select
 import socket
 import json
 
+import NetworkUtil as NU
 from Connectable import Connectable
 from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerializer;
 from Logger import Logger;
@@ -13,8 +14,10 @@ class Client(Connectable):
 	connectingId = None;
 	conf = None
 	LAO = None;
+	isWebsocket = False;
+	log = None;
 
-	def __init__(self, socket, size, address, port, connectingId, conf, LAO):
+	def __init__(self, socket, size, address, port, connectingId, conf, LAO, log):
 		self.socket = socket;
 		self.messageSize = size;
 		self.midac = MIDaCSerializer();
@@ -23,16 +26,23 @@ class Client(Connectable):
 		self.connectingId = connectingId;
 		self.conf = conf;
 		self.LAO = LAO;
+		self.log = log;
 
 	def receiveAndDecode(self):
 		try:
-			return self.socket.recv(self.messageSize).decode("utf-8");
+			if self.isWebsocket:
+				return NU.decode(self.socket.recv(self.messageSize));
+			else:
+				return self.socket.recv(self.messageSize).decode("utf-8");
 		except socket.error:
 			self.log.logAndPrintError("Connection reset by peer, if reocurring restart server");
 			return False
 
 	def sendAndEncode(self, msg):
-		self.socket.send(msg.encode());
+		if self.isWebsocket :
+			NU.sendData(self.socket, msg)
+		else:
+			self.socket.send(msg.encode("utf-8"));
 
 	def performHandshake(self):
 		if not self.established:
@@ -41,10 +51,18 @@ class Client(Connectable):
 				if not inputMSG:
 					self.socket.close()
 
-				msg = json.loads(inputMSG);
+				if inputMSG[:3] == "GET":
+					handshake = NU.create_handshake(inputMSG)
+					self.sendAndEncode(handshake)
+					self.isWebsocket = True;
+				else:
+					try:
+						msg = json.loads(inputMSG);
 
-				if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
-					self.handshakeStatus = 1;
+						if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
+							self.handshakeStatus = 1;
+					except ValueError:
+						print("error");
 
 			elif self.handshakeStatus == 1:
 				self.sendAndEncode(self.midac.GenerateConnACK("None", self.conf.SEGMENT_SIZE));
@@ -52,18 +70,19 @@ class Client(Connectable):
 
 			elif self.handshakeStatus == 2:
 				#Creating test MIDaC Conn LAO here
-
-				self.sendAndEncode(json.dumps(self.LAO));
+				self.sendAndEncode(self.LAO);
 				self.handshakeStatus = 3;
 
 			else:
 				inputMSG = self.receiveAndDecode();
 				if not inputMSG:
 					self.socket.close();
-
-				msg = json.loads(inputMSG);
-				if self.midac.GetMessageType(msg) == MSGType.ConnSTT:
-					self.established = True;
+				try:
+					msg = json.loads(inputMSG);
+					if self.midac.GetMessageType(msg) == MSGType.ConnSTT:
+						self.established = True;
+				except ValueError:
+					self.established = False;
 
 		else:
 			raise Exception("Handshake already performed");

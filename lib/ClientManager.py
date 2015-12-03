@@ -58,7 +58,7 @@ class ClientManager():
 		client, address = self.server.accept();
 		client.setblocking(0);
 
-		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf, self.LAO));
+		self.clients.append(Client(client, self.conf.SEGMENT_SIZE, address[0], address[1], self.newConnectedId, self.conf, self.LAO, self.log));
 
 		self.log.logAndPrintMessage("Client "+`self.newConnectedId`+" ("+address[0]+":"+`address[1]`+") connected");
 		self.newConnectedId+=1;
@@ -66,9 +66,13 @@ class ClientManager():
 	def handleHandshake(self):
 		for client in self.getHandshakeSockets():
 			if (client.socket in self.inputready and (client.handshakeStatus == 0 or client.handshakeStatus == 3 )) or (client.socket in self.outputready and (client.handshakeStatus == 1 or client.handshakeStatus == 2)):
+				#try:
 				client.performHandshake();
 				if client.established:
 					self.log.logAndPrintSuccess("Handshake with Client "+`client.connectingId`+" successful!");
+				#except TypeError:
+				#	self.clients.remove(client)
+				#	self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!");
 			if client.socket in self.inputready:
 				self.inputready.remove(client.socket);
 			if client.socket in self.outputready:
@@ -81,12 +85,19 @@ class ClientManager():
 				self.handleConnect();
 			else:
 				try:
-					data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE);
+					client = self.getClientBySocket(sock);
+					if client.isWebsocket:
+						data = client.receiveAndDecode();
+						print(data)
+					else:
+						data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE);
 					if data:
 						#Only the longest lasting connected can send
 						if self.clients.index(self.getClientBySocket(sock)) == 0:
-							print(data);
-							control = json.dumps(data);
+							try:
+								control = json.dumps(data);
+							except:
+								self.log.logAndPrintWarning("Unparseable client input");
 					else:
 						if(sock in self.inputready):
 							self.inputready.remove(sock);
@@ -103,7 +114,11 @@ class ClientManager():
 	def handleOutput(self, msg):
 		for sock in self.outputready:
 			try:
-				sock.send(msg);
+				client = self.getClientBySocket(sock);
+				if client.isWebsocket:
+					client.sendAndEncode(msg)
+				else:
+					sock.send(msg);
 			except socket.error:
 				self.log.logAndPrintError("Broken pipe warning, if reocurring restart server");
 

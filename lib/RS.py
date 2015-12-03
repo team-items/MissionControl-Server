@@ -61,7 +61,7 @@ class RS():
         return msg
 
     def handleInput(self):
-        return self.multiReceive()
+        return self.multiReceive().encode("utf-8")
 
     def handleOutput(self, msg):
         print("Should implement sending function!")
@@ -76,6 +76,6 @@ class RS():
 
         self.connection.sendall(self.midac.GenerateConnACK_B().encode())#ConnACK
         data = self.multiReceive()#ConnLAO
-        self.LAO = data
+        self.LAO = data.encode("utf-8")
 
 
