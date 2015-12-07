@@ -2,9 +2,9 @@ import json
 import select;
 import socket;
 import sys
-import hashlib
 import base64
 import struct
+import sha
 
 def multiReceive(client, SEGMENT_SIZE):
 	finished = False;
@@ -35,7 +35,7 @@ def create_handshake(handshake):
     returning_handshake = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: "
 
     if(len(matching) > 0):
-        returning_handshake+=base64.b64encode(hashlib.sha1((matching[0][19:]+"258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode()).digest()).decode()
+        returning_handshake+=base64.b64encode(sha.sha1((matching[0][19:]+"258EAFA5-E914-47DA-95CA-C5AB0DC85B11").encode(), False)).decode()
         returning_handshake+="\r\n\r\n"
     return returning_handshake
 
