@@ -62,7 +62,7 @@ class Client(Connectable):
 						if self.midac.GetMessageType(msg) == MSGType.ConnREQ:
 							self.handshakeStatus = 1;
 					except ValueError:
-						print("error");
+						self.log.logAndPrintError("Error while parsing input");
 
 			elif self.handshakeStatus == 1:
 				self.sendAndEncode(self.midac.GenerateConnACK("None", self.conf.SEGMENT_SIZE));

@@ -88,7 +88,6 @@ class ClientManager():
 					client = self.getClientBySocket(sock);
 					if client.isWebsocket:
 						data = client.receiveAndDecode();
-						print(data)
 					else:
 						data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE);
 					if data:
