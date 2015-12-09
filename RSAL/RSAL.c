@@ -11,7 +11,7 @@ Version 0.1
 #include <sys/un.h>
 #include "LINKV1.c"
 
-#define SOCK_PATH "echo_socket"
+#define SOCK_PATH "uds_socket"
 
 int sock, t, len, i;
 struct sockaddr_un remote;

@@ -3,6 +3,7 @@
 import sys 
 import socket 
 import time 
+import os
 
 #Own Libraries
 from lib import *
@@ -61,13 +62,14 @@ while running:
 		#wait for steprate time
 		time.sleep(conf.SAMPLERATE) 
 	except KeyboardInterrupt:
-		server.close() 
-		rsal.rsalProcss.terminate() 
 		log.logAndPrintWarning("Server manually stopped") 
-		sys.exit() 
+		break
 	except:
-		server.close() 
-		rsal.rsalProcss.terminate() 
 		log.logAndPrintError("Unexpected Exception. Server stopped") 
-		sys.exit() 
+		break
 
+#tidy up and close
+server.close() 
+rsal.rsalProcss.terminate() 
+os.remove("uds_socket")
+sys.exit() 

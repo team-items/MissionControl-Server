@@ -11,7 +11,7 @@ from ConfigHandler import ConfigHandler
 
 #class used to start, connect and manage the rsal
 class RS():
-    server_address = 'echo_socket'
+    server_address = 'uds_socket'
     connection = None 
     sock = None 
     LAO = None 
