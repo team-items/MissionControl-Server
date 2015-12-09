@@ -57,3 +57,9 @@ while running:
 		log.logAndPrintWarning("Server manually stopped");
 		sys.exit();
 		rsal.rsalProcss.terminate();
+	except:
+		server.close() 
+		rsal.rsalProcss.terminate() 
+		log.logAndPrintError("Unexpected Exception. Server stopped") 
+		sys.exit() 
+
