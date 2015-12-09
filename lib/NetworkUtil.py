@@ -1,33 +1,38 @@
 import json
-import select;
-import socket;
+import select 
+import socket 
 import sys
 import base64
 import struct
 import sha
 
+#NetworkUtil contains functions used to simplify network communication
+
+
+#receives and stitches multiple messages until they are midac parseable
 def multiReceive(client, SEGMENT_SIZE):
-	finished = False;
-	jsonMsg = None;
-	msg = client.recv(SEGMENT_SIZE).decode("utf-8");
+	finished = False 
+	jsonMsg = None 
+	msg = client.recv(SEGMENT_SIZE).decode("utf-8") 
 
 	if not msg:
-		return False;
+		return False 
 	while not finished:
 		try:
-			jsonMsg = json.loads(msg);
+			jsonMsg = json.loads(msg) 
 
-			finished = True;
+			finished = True 
 		except ValueError:
-			inputready, outputready, excepts = select.select([client], [], []);
+			inputready, outputready, excepts = select.select([client], [], []) 
 			if len(inputready) == 1:
-				msg1 = client.recv(SEGMENT_SIZE).decode("utf-8");
-				msg = msg+msg1;
+				msg1 = client.recv(SEGMENT_SIZE).decode("utf-8") 
+				msg = msg+msg1 
 
 				if not msg:
-					return False;
-	return jsonMsg;
+					return False 
+	return jsonMsg 
 
+#creates the handshake message used to connect a websocket client
 def create_handshake(handshake):
     handshakelines = handshake.split("\r\n")
     matching = [s for s in handshakelines if "Sec-WebSocket-Key: " in s]
@@ -39,6 +44,7 @@ def create_handshake(handshake):
         returning_handshake+="\r\n\r\n"
     return returning_handshake
 
+#decodes messages from websockets
 def decode(data):
     frame = bytearray(data)
 
@@ -63,10 +69,8 @@ def decode(data):
 
     return "".join(chr(byte) for byte in decoded)
 
+#encodes messages for websockets
 def encode(data):
-	"""
-	Encode and send a WebSocket message
-	"""
 	message = bytes()
 
 	b1 = b'\x81'
@@ -99,6 +103,7 @@ def encode(data):
 
 	return message
 
+#Masks messages for websockets and sends them
 def sendData(sock, data, fin=True, opcode=1, masking_key=False):
     if fin > 0x1:
         raise ValueError('FIN bit parameter must be 0 or 1')

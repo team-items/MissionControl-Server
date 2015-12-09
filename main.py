@@ -1,62 +1,70 @@
 #!/usr/bin/env python
 
-import sys;
-import socket;
-import time;
+import sys 
+import socket 
+import time 
 
 #Own Libraries
 from lib import *
 
-server = None;
+server = None 
 
-print("MissionControl Server (MIDaC V1)\n");
+print("MissionControl Server (MIDaC V1)\n") 
 
-log = Logger("eventlog.log");
-conf = ConfigHandler("config.conf", log);
+log = Logger("eventlog.log") 
+conf = ConfigHandler("config.conf", log) 
 
-log.logAndPrintMessage("Setting up server");
+log.logAndPrintMessage("Setting up server") 
 
+#Create Socket
 try:
-	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-	server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
-	server.bind((conf.HOST, conf.PORT));
-	server.listen(conf.BACKLOG);
+	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+	server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
+	server.bind((conf.HOST, conf.PORT)) 
+	server.listen(conf.BACKLOG) 
 except socket.error:
 	if server:
-		server.close();
-	log.logAndPrintError("Could not open socket: "+`sys.exc_info()[1]`);
-	sys.exit();
+		server.close() 
+	log.logAndPrintError("Could not open socket: "+`sys.exc_info()[1]`) 
+	sys.exit() 
 
+#Create RSAL object, launch RSAL as subprocess and connect
 rsal = RS(conf, log)
 rsal.connect()
 
-log.logAndPrintSuccess("RSAL Connected!");
+log.logAndPrintSuccess("RSAL Connected!") 
+log.logAndPrintSuccess("Server running!") 
 
-log.logAndPrintSuccess("Server running!");
+#Create client manager
+clients = ClientManager(server, log, conf, rsal.LAO) 
+log.logAndPrintSuccess("Client Manager started!") 
 
-clients = ClientManager(server, log, conf, rsal.LAO);
-log.logAndPrintSuccess("Client Manager started!");
-
-running = True;
+running = True 
+#main loop
 while running:
 	try:
-		clients.update();
-		clients.handleHandshake();
+		#run select on all clients
+		clients.update() 
+		#perform handshake operations with clients that are in handshake
+		clients.handleHandshake() 
 		
-		control = clients.handleInput();
+		#receive input from connnected clients and send it to rsal
+		control = clients.handleInput() 
 		if control != None:
-			rsal.handleOutput(control);
+			rsal.handleOutput(control) 
 
-		data = rsal.handleInput();
+		#receive input from rsal and send it to all ready connected clients
+		data = rsal.handleInput() 
 		if data != None:
-			clients.handleOutput(data);
+			clients.handleOutput(data) 
 
-		time.sleep(conf.SAMPLERATE);
+		#wait for steprate time
+		time.sleep(conf.SAMPLERATE) 
 	except KeyboardInterrupt:
-		server.close();
-		log.logAndPrintWarning("Server manually stopped");
-		sys.exit();
-		rsal.rsalProcss.terminate();
+		server.close() 
+		rsal.rsalProcss.terminate() 
+		log.logAndPrintWarning("Server manually stopped") 
+		sys.exit() 
 	except:
 		server.close() 
 		rsal.rsalProcss.terminate() 

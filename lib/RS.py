@@ -9,12 +9,14 @@ from MIDaCSerializer import MSGType, MIDaCSerializationException, MIDaCSerialize
 from Logger import Logger
 from ConfigHandler import ConfigHandler
 
+#class used to start, connect and manage the rsal
 class RS():
     server_address = 'echo_socket'
-    connection = None;
-    sock = None;
-    LAO = None;
+    connection = None 
+    sock = None 
+    LAO = None 
 
+    #initializes rs object, creates uds socket used for connection
     def __init__(self, conf, log):
         self.messageSize = conf.SEGMENT_SIZE
         self.conf = conf
@@ -36,6 +38,7 @@ class RS():
         # Listen for incoming connections
         self.sock.listen(1)
 
+    #receives and stitches multiple messages until they are midac parseable
     def multiReceive(self):
         finished = False
         jsonMsg = None
@@ -60,12 +63,15 @@ class RS():
                     return False
         return msg
 
+    #handles input from rsal
     def handleInput(self):
         return self.multiReceive().encode("utf-8")
 
+    #handles output to rsal
     def handleOutput(self, msg):
         print("Should implement sending function!")
 
+    #launches and connects rsal
     def connect(self):
         self.rsalProcss = Popen(['./RSAL/RSAL'])
         # Wait for a connection

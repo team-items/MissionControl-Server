@@ -1,9 +1,11 @@
 import struct
 import base64
 
+#left rotates byte
 def _left_rotate(n, b):
     return ((n << b) | (n >> (32 - b))) & 0xffffffff
 
+#python only implementation of sha1
 def sha1(message, hexDigest):
     """SHA-1 Hashing Function
     A custom SHA-1 hashing function implemented entirely in Python.
@@ -74,9 +76,10 @@ def sha1(message, hexDigest):
         h3 = (h3 + d) & 0xffffffff
         h4 = (h4 + e) & 0xffffffff
     
-    # Produce the final hash value (big-endian):
+    # Produce the final hash value (big-endian): as hexdigest
     if hexDigest:
         return '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)
+    #as normal digest
     else:
         return ('%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)).decode('hex')
 
