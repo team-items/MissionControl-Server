@@ -28,6 +28,7 @@ void sendMsg(char* msg){
         message[2048*ward] = '\0';
         if (send(sock, message, strlen(message), 0) == -1) {
             perror("send");
+            exit(1);
         }
         free(message);
     }else{
@@ -39,6 +40,7 @@ void sendMsg(char* msg){
         message[2048] = '\0';
         if (send(sock, message, strlen(message), 0) == -1) {
             perror("send");
+            exit(1);
         }
         free(message);
     }
@@ -47,10 +49,10 @@ void sendMsg(char* msg){
 char* receiveMsg(){
     if ((t=recv(sock, str, 2048, 0)) > 0) {
         str[t] = '\0';
-        puts(str);
+        return str;
     } else {
         if (t < 0) perror("recv");
-        else printf("Server closed connection\n");
+        else printf("RSAL_PROC_MSG: Server closed connection\n");
         exit(1);
     }
 }
@@ -63,7 +65,6 @@ int main(void)
         exit(1);
     }
 
-    printf("Trying to connect...\n");
 
     remote.sun_family = AF_UNIX;
     strcpy(remote.sun_path, SOCK_PATH);
@@ -73,15 +74,10 @@ int main(void)
         exit(1);
     }
 
-    printf("Connected.\n");
-    puts("Sending B-Connect");
     sendMsg("{ \"B-Connect\" : \"\"}");
-    puts("Receiving ConnACK");
     receiveMsg();
-    puts("Sending ConnLAO");
     sendMsg(generateConnLAO());
 
-    puts("Handshaking performed");
     while(1) {
         char* msg = generateDataMsg();
         sendMsg(msg);
