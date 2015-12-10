@@ -71,13 +71,14 @@ class ClientManager():
 	def handleHandshake(self):
 		for client in self.getHandshakeSockets():
 			if (client.socket in self.inputready and (client.handshakeStatus == 0 or client.handshakeStatus == 3 )) or (client.socket in self.outputready and (client.handshakeStatus == 1 or client.handshakeStatus == 2)):
-				#try:
-				client.performHandshake() 
-				if client.established:
-					self.log.logAndPrintSuccess("Handshake with Client "+`client.connectingId`+" successful!") 
-				#except TypeError:
-				#	self.clients.remove(client)
-				#	self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
+				try:
+					client.performHandshake() 
+					if client.established:
+						self.log.logAndPrintSuccess("Handshake with Client "+`client.connectingId`+" successful!") 
+				except:
+					self.clients.remove(client)
+					self.log.logAndPrintError("Unexpected exception occured during handshake!")
+					self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
 			if client.socket in self.inputready:
 				self.inputready.remove(client.socket) 
 			if client.socket in self.outputready:
