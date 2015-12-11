@@ -65,8 +65,7 @@ while running:
 		log.logAndPrintWarning("Server manually stopped") 
 		break
 	except:
-		log.logAndPrintError("Unexpected Exception. Server stopped") 
-		break
+		log.logAndPrintError("Unexpected Exception. Manual restart recommended") 
 
 #tidy up and close
 server.close() 

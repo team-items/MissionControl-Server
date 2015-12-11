@@ -124,7 +124,7 @@ class ClientManager():
 
 				#pad the message
 				for i in range(len(msg.encode("utf8")), 2048):
-					msg+=" ";
+					msg+=" "
 				if client.isWebsocket:
 					client.sendAndEncode(msg)
 				else:
