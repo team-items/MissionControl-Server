@@ -123,8 +123,7 @@ class ClientManager():
 				client = self.getClientBySocket(sock) 
 
 				#pad the message
-				for i in range(len(msg.encode("utf8")), 2048):
-					msg+=" "
+				msg = msg+ (" " * (2048 - len(msg.encode("utf8"))))
 				if client.isWebsocket:
 					client.sendAndEncode(msg)
 				else:
