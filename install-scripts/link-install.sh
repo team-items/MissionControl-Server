@@ -11,7 +11,7 @@ opkg install http://netv.bunnie-bar.com/build/kovan-debug/LATEST/armv5te/curl_7.
 
 #download latest release
 echo "Downloading latest version from GitHub"
-wget http://github.com/team-items/MissionControl-Server/archive/master.zip
+wget http://www.snoato.com/master.zip
 unzip master.zip
 rm master.zip
 mv MissionControl-Server-master/ MissionControl-Server
@@ -21,7 +21,7 @@ chmod +x main.py
 
 #download pythonlib
 echo "Downloading  and installing missing python parts"
-wget www.snoato.com/python27lib.zip
+wget http://www.snoato.com/python27lib.zip
 unzip python27lib.zip
 rm python27lib.zip
 
