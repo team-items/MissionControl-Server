@@ -55,6 +55,7 @@ while running:
 			rsal.handleOutput(control) 
 
 		#receive input from rsal and send it to all ready connected clients
+		rsal.request()
 		data = rsal.handleInput() 
 		if data != None:
 			clients.handleOutput(data) 
@@ -65,7 +66,7 @@ while running:
 		log.logAndPrintWarning("Server manually stopped") 
 		break
 	except:
-		log.logAndPrintError("Unexpected Exception. Manual restart recommended") 
+		log.logAndPrintError("Unexpected Exception catched") 
 
 #tidy up and close
 server.close() 

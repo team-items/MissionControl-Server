@@ -151,8 +151,9 @@ def sendData(sock, data, fin=True, opcode=1, masking_key=False):
     
     try:
         sock.send(bytes(header + body))
+        return True
     except IOError, e:
-        print('error writing - %s' % data)
+        return False
 #    except Exception, e:
 #       	print(e)
 #        print(e)

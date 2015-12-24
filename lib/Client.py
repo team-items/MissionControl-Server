@@ -42,8 +42,11 @@ class Client(Connectable):
 
 	#performs utf-8 encoding on msg and sends it or uses the webscoket send function
 	def sendAndEncode(self, msg):
-		if self.isWebsocket :
-			NU.sendData(self.socket, msg)
+		if self.isWebsocket:
+			if not NU.sendData(self.socket, msg):
+				return False
+			else:
+				return True
 		else:
 			self.socket.send(msg.encode("utf-8")) 
 

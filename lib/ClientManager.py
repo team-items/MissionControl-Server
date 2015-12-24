@@ -104,6 +104,7 @@ class ClientManager():
 								control = json.dumps(data) 
 							except:
 								self.log.logAndPrintWarning("Unparseable client input") 
+								return None
 					else:
 						if(sock in self.inputready):
 							self.inputready.remove(sock) 
@@ -125,7 +126,9 @@ class ClientManager():
 				#pad the message
 				msg = msg+ (" " * (2048 - len(msg.encode("utf8"))))
 				if client.isWebsocket:
-					client.sendAndEncode(msg)
+					if not client.sendAndEncode(msg):
+						self.clients.remove(client)
+						self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
 				else:
 					sock.send(msg) 
 			except socket.error:

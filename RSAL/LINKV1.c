@@ -10,6 +10,7 @@
 
 //int digital(int wat){ return 0; }
 //int analog(int wat){ return 999; }
+//void msleep(int time) {} 
 
 JSON_Value *root_value;
 JSON_Object *root_object;
@@ -180,4 +181,15 @@ void control(char * msg){
     if((number = (int)json_object_dotget_number(input, "Control.servo 4")) != 0){
     	printf("Servo 4: %d\n", number);
     }
+}
+
+int is_get(char * msg){
+    ctrl_root_value = json_parse_string(msg);
+
+    input = json_value_get_object(ctrl_root_value);
+
+    if(json_object_dotget_string(input, "GET") != NULL){
+        return 1;
+    }
+    return 0;
 }
