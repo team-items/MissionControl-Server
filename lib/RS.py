@@ -84,4 +84,7 @@ class RS():
         data = self.multiReceive()#ConnLAO
         self.LAO = data.encode("utf-8")
 
+    #requests new data from rsal
+    def request(self):
+        self.connection.send('{ "GET" : "" }'.encode())
 

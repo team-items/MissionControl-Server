@@ -57,7 +57,14 @@ char* receiveMsg(){
     }
 }
 
-int main(void)
+int estConnection(){
+    sendMsg("{ \"B-Connect\" : \"\"}");
+    receiveMsg();
+    sendMsg(generateConnLAO());
+    return 0;
+}
+
+int main(int argc, char *argv[])
 {
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
@@ -74,14 +81,16 @@ int main(void)
         exit(1);
     }
 
-    sendMsg("{ \"B-Connect\" : \"\"}");
-    receiveMsg();
-    sendMsg(generateConnLAO());
+    estConnection();
 
     while(1) {
-        char* msg = generateDataMsg();
-        sendMsg(msg);
-        free(msg);
+        char* msg = receiveMsg();
+        if(is_get(msg)){ 
+            msg = generateDataMsg();
+            sendMsg(msg);
+        } else {
+            control(msg);
+        }
     }
 
     close(sock);
