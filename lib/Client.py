@@ -28,12 +28,17 @@ class Client(Connectable):
 		self.conf = conf 
 		self.LAO = LAO 
 		self.log = log 
+		self.isWebsocket = False
 
 	#receives message and performs
 	def receiveAndDecode(self):
 		try:
 			if self.isWebsocket:
-				return NU.decode(self.socket.recv(self.messageSize)) 
+				decodedMsg = NU.decode(self.socket.recv(self.messageSize))
+				if decodedMsg == None:
+					self.log.logAndPrintError("Error decoding message, maybe wrong format?") 
+				else:
+					return decodedMsg 
 			else:
 				return self.socket.recv(self.messageSize).decode("utf-8") 
 		except socket.error:
