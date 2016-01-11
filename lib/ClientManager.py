@@ -55,7 +55,11 @@ class ClientManager():
 
 	#performs select on all connected clients
 	def update(self):
-		self.inputready, self.outputready, excepts = select.select(self.getClientsSockets([self.server]), self.getClientsSockets([]), []) 
+		try:
+			self.inputready, self.outputready, excepts = select.select(self.getClientsSockets([self.server]), self.getClientsSockets([]), []) 
+		except socket.error:
+			self.log.logAndPrintError("Error while updating connected clients, how fix?") 
+			
 
 	#creates client object and adds it to client list. performed when client connected
 	def handleConnect(self):
@@ -78,7 +82,7 @@ class ClientManager():
 				except:
 					self.clients.remove(client)
 					self.log.logAndPrintError("Unexpected exception occured during handshake!")
-					self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
+					self.log.logAndPrintMessage("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
 			if client.socket in self.inputready:
 				self.inputready.remove(client.socket) 
 			if client.socket in self.outputready:
@@ -103,7 +107,10 @@ class ClientManager():
 							try:
 								control = json.dumps(data) 
 							except:
-								self.log.logAndPrintWarning("Unparseable client input") 
+								self.log.logAndPrintWarning("Unparseable client input")
+						
+								#print(data)
+								#print(type(data))
 								return None
 					else:
 						if(sock in self.inputready):
@@ -128,7 +135,7 @@ class ClientManager():
 				if client.isWebsocket:
 					if not client.sendAndEncode(msg):
 						self.clients.remove(client)
-						self.log.logAndPrintWarning("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
+						self.log.logAndPrintMessage("Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+") disconnected!") 
 				else:
 					sock.send(msg) 
 			except socket.error:
