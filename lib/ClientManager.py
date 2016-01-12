@@ -107,7 +107,7 @@ class ClientManager():
 							try:
 								control = json.dumps(data) 
 							except:
-								self.log.logAndPrintWarning("Unparseable client input")
+								self.log.logAndPrintWarning("Unparseable client input by " + "Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+")")
 						
 								#print(data)
 								#print(type(data))
