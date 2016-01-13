@@ -103,15 +103,13 @@ class ClientManager():
 						data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE) 
 					if data:
 						#Only the longest lasting connected can send
-						if self.clients.index(self.getClientBySocket(sock)) == 0:
-							try:
-								control = json.dumps(data) 
-							except:
-								self.log.logAndPrintWarning("Unparseable client input by " + "Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+")")
+						#if self.clients.index(self.getClientBySocket(sock)) == 0:
+						try:
+							control = json.dumps(data) 
+						except:
+							self.log.logAndPrintWarning("Unparseable client input by " + "Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+")")
 						
-								#print(data)
-								#print(type(data))
-								return None
+							return None
 					else:
 						if(sock in self.inputready):
 							self.inputready.remove(sock) 

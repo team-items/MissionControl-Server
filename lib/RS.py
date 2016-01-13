@@ -69,7 +69,8 @@ class RS():
 
     #handles output to rsal
     def handleOutput(self, msg):
-        print("Should implement sending function!")
+        self.connection.send(msg.encode())
+        print(msg)
 
     #launches and connects rsal
     def connect(self):
