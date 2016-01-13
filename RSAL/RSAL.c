@@ -66,6 +66,7 @@ int estConnection(){
 
 int main(int argc, char *argv[])
 {
+    init();
 
     if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
         perror("socket");

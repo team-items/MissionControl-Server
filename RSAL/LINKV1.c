@@ -19,6 +19,26 @@ JSON_Object *input;
 char *serialized_string = NULL;
 int number;
 
+int servoPos1 = 0;
+int servoPos2 = 0;
+int servoPos3 = 0;
+int servoPos4 = 0;
+
+int motorSpeed1 = 0;
+int motorSpeed2 = 0;
+int motorSpeed3 = 0;
+int motorSpeed4 = 0;
+
+int motorStat1 = 0;
+int motorStat2 = 0;
+int motorStat3 = 0;
+int motorStat4 = 0;
+
+void init(){
+    enable_servos();
+
+}
+
 char* getDigitalWrapped(int port){
 	if(digital(port)){
 		return "true";
@@ -81,34 +101,38 @@ char* generateConnLAO(){
 
 
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S1.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S1.MinBoud", 1);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S1.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S1.MaxBound", 2047);
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 1.Button S1.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S2.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S2.MinBoud", 1);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S2.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S2.MaxBound", 2047);
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 2.Button S2.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S3.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S3.MinBoud", 1);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S3.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S3.MaxBound", 2047);
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 3.Button S3.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 4.Slider S4.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 4.Slider S4.MinBoud", 1);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 4.Slider S4.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 4.Slider S4.MaxBound", 2047);
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 4.Button S4.ControlType", "Button");
 
 
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Slider.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Slider.MinBoud", 1);
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Slider.MaxBound", 1500);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Slider.MinBound", -1000);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 1 Button.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Slider.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Slider.MinBoud", 1);
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Slider.MaxBound", 1500);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Slider.MinBound", -1000);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 2 Button.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Slider.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Slider.MinBoud", 1);
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Slider.MaxBound", 1500);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Slider.MinBound", -1000);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 3 Button.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Slider.ControlType", "Slider");
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Slider.MinBoud", 1);
-    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Slider.MaxBound", 1500);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Slider.MinBound", -1000);
+    json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 4.Motor 4 Button.ControlType", "Button");
 
     return json_serialize_to_string_pretty(root_value_lao);
@@ -138,48 +162,93 @@ char* generateDataMsg(){
 	return json_serialize_to_string_pretty(root_value);
 }
 
-void control(char * msg){
+void control(char* msg){
 	ctrl_root_value = json_parse_string(msg);
 
-    input = json_value_get_object(ctrl_root_value);
 
-    if(json_object_dotget_string(input, "Control.Motor 1-Button") != NULL){
-    	puts("Motor 1-Button Clicked");
+    input = json_value_get_object(ctrl_root_value);
+    if(json_object_dotget_string(input, "Control.Motor 1 Button") != NULL){
+        if(motorStat1 == 0){
+            motorStat1 = 1;
+            mav(0, motorSpeed1);
+        } else {
+            motorStat1 = 0;
+        }
     }
-    if(json_object_dotget_string(input, "Control.Motor 2-Button") != NULL){
-    	puts("Motor 2-Button Clicked");
+    if(json_object_dotget_string(input, "Control.Motor 2 Button") != NULL){
+        if(motorStat2 == 0){
+            motorStat2 = 1;
+            mav(1, motorSpeed2);
+        } else {
+            motorStat2 = 0;
+        }
     }
-    if(json_object_dotget_string(input, "Control.Motor 3-Button") != NULL){
-    	puts("Motor 3-Button Clicked");
+    if(json_object_dotget_string(input, "Control.Motor 3 Button") != NULL){
+        if(motorStat3 == 0){
+            motorStat3 = 1;
+            mav(2, motorSpeed3);
+        } else {
+            motorStat3 = 0;
+        }
     }
-    if(json_object_dotget_string(input, "Control.Motor 4-Button") != NULL){
-    	puts("Motor 4-Button Clicked");
+    if(json_object_dotget_string(input, "Control.Motor 4 Button") != NULL){
+        if(motorStat4 == 0){
+            motorStat4 = 1;
+            mav(3, motorSpeed4);
+        } else {
+            motorStat4 = 0;
+        }
+    }
+
+    if(json_object_dotget_string(input, "Control.Button S1") != NULL){
+        set_servo_position(0, servoPos1);
+    }
+    if(json_object_dotget_string(input, "Control.Button S2") != NULL){
+        set_servo_position(1, servoPos2);
+    }
+    if(json_object_dotget_string(input, "Control.Button S3") != NULL){
+        set_servo_position(2, servoPos3);
+    }
+    if(json_object_dotget_string(input, "Control.Button S4") != NULL){
+        set_servo_position(3, servoPos4);
     }
     
     number = 0;
-    if((number = (int)json_object_dotget_number(input, "Control.Motor 1")) != 0){
-    	printf("Motor 1: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Motor 1 Slider")) != 0){
+        motorSpeed1 = number;
+        if(motorStat1 == 1){
+            mav(0, motorSpeed1);
+        }
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Motor 2")) != 0){
-    	printf("Motor 2: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Motor 2 Slider")) != 0){
+        motorSpeed2 = number;
+        if(motorStat2 == 1){
+            mav(1, motorSpeed2);
+        }
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Motor 3")) != 0){
-    	printf("Motor 3: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Motor 3 Slider")) != 0){
+        motorSpeed3 = number;
+        if(motorStat3 == 1){
+            mav(2, motorSpeed3);
+        }
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Motor 4")) != 0){
-    	printf("Motor 4: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Motor 4 Slider")) != 0){
+        motorSpeed4 = number;
+        if(motorStat4 == 1){
+            mav(3, motorSpeed4);
+        }
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Servo 1")) != 0){
-    	printf("Servo 1: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Slider S1")) != 0){
+        servoPos1 = number;
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Servo 2")) != 0){
-    	printf("Servo 2: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Slider S2")) != 0){
+        servoPos2 = number;
     }
-    if((number = (int)json_object_dotget_number(input, "Control.Servo 3")) != 0){
-    	printf("Servo 3: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Slider S3")) != 0){
+        servoPos3 = number;
     }
-    if((number = (int)json_object_dotget_number(input, "Control.servo 4")) != 0){
-    	printf("Servo 4: %d\n", number);
+    if((number = (int)json_object_dotget_number(input, "Control.Slider S4")) != 0){
+        servoPos4 = number;
     }
 }
 
