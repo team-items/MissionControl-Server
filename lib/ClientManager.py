@@ -58,7 +58,15 @@ class ClientManager():
 		try:
 			self.inputready, self.outputready, excepts = select.select(self.getClientsSockets([self.server]), self.getClientsSockets([]), []) 
 		except socket.error:
-			self.log.logAndPrintError("Error while updating connected clients, how fix?") 
+			self.log.logAndPrintError("Socket descriptor turned invalid, checking connected clients")
+			prevClient = None;
+			try:
+				for client in self.clients:
+					prevClient = client;
+					inputready, outputready, excepts = select.select([client.socket], [client.socket], []) 
+			except socket.error:
+				self.clients.remove(prevClient)
+				self.log.logAndPrintError("Disconnecting Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+"), socket descriptor invalid!") 
 			
 
 	#creates client object and adds it to client list. performed when client connected
