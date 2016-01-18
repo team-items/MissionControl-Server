@@ -36,7 +36,6 @@ int motorStat4 = 0;
 
 void init(){
     enable_servos();
-
 }
 
 char* getDigitalWrapped(int port){
@@ -143,7 +142,15 @@ char* generateConnLAO(){
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Button.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Button.Descriptor", "Switch");
 
-    return json_serialize_to_string_pretty(root_value_lao);
+    char* result = json_serialize_to_string_pretty(root_value_lao);
+
+    //Free up variables
+    free(root_value_lao);
+    free(root_object_lao);
+    root_value_lao = 0;
+    root_object_lao = 0;
+
+    return result;
 }
 
 char* generateDataMsg(){
@@ -167,14 +174,22 @@ char* generateDataMsg(){
     json_object_dotset_string(root_object, "Data.Digital 14", getDigitalWrapped(14));
     json_object_dotset_string(root_object, "Data.Digital 15", getDigitalWrapped(15));
 
-	return json_serialize_to_string_pretty(root_value);
+
+    char* result = json_serialize_to_string_pretty(root_value);
+
+    //Free up variables
+    free(root_value);
+    free(root_object);
+    root_value = 0;
+    root_object = 0;
+
+	return result;
 }
 
 void control(char* msg){
 	ctrl_root_value = json_parse_string(msg);
-
-
     input = json_value_get_object(ctrl_root_value);
+
     if(json_object_dotget_string(input, "Control.Motor 1 Button") != NULL){
         if(motorStat1 == 0){
             motorStat1 = 1;
@@ -262,15 +277,29 @@ void control(char* msg){
     if((number = (int)json_object_dotget_number(input, "Control.Slider S4")) != 0){
         servoPos4 = number;
     }
+
+    //Free up variables
+    free(ctrl_root_value);
+    free(input);
+    input = 0;
+    ctrl_root_value = 0;
 }
 
 int is_get(char * msg){
+    int returnStatus = 0;
     ctrl_root_value = json_parse_string(msg);
 
     input = json_value_get_object(ctrl_root_value);
 
     if(json_object_dotget_string(input, "GET") != NULL){
-        return 1;
+        returnStatus = 1;
     }
-    return 0;
+
+    //Free up variables
+    free(ctrl_root_value);
+    free(input);
+    input = 0;
+    ctrl_root_value = 0;
+
+    return returnStatus;
 }
