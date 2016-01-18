@@ -104,36 +104,44 @@ char* generateConnLAO(){
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 0.Slider S1.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 0.Slider S1.MaxBound", 2047);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 0.Button S1.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 0.Button S1.Descriptor", "Set");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S2.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S2.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 1.Slider S2.MaxBound", 2047);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 1.Button S2.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 1.Button S2.Descriptor", "Set");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S3.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S3.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 2.Slider S3.MaxBound", 2047);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 2.Button S3.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 2.Button S3.Descriptor", "Set");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S4.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S4.MinBound", 1);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Servo 3.Slider S4.MaxBound", 2047);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 3.Button S4.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Servo 3.Button S4.Descriptor", "Set");
 
 
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 0.Motor 1 Slider.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 0.Motor 1 Slider.MinBound", -1000);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 0.Motor 1 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 0.Motor 1 Button.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 0.Motor 1 Button.Descriptor", "Switch");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 2 Slider.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 2 Slider.MinBound", -1000);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 2 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 2 Button.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 1.Motor 2 Button.Descriptor", "Switch");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Slider.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Slider.MinBound", -1000);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Button.ControlType", "Button");
-    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.ControlType", "Slider");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Button.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.Descriptor", "Switch");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.MinBound", -1000);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Button.ControlType", "Button");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Button.Descriptor", "Switch");
 
     return json_serialize_to_string_pretty(root_value_lao);
 }
@@ -173,6 +181,7 @@ void control(char* msg){
             mav(0, motorSpeed1);
         } else {
             motorStat1 = 0;
+            off(0);
         }
     }
     if(json_object_dotget_string(input, "Control.Motor 2 Button") != NULL){
@@ -181,6 +190,7 @@ void control(char* msg){
             mav(1, motorSpeed2);
         } else {
             motorStat2 = 0;
+            off(1);
         }
     }
     if(json_object_dotget_string(input, "Control.Motor 3 Button") != NULL){
@@ -189,6 +199,7 @@ void control(char* msg){
             mav(2, motorSpeed3);
         } else {
             motorStat3 = 0;
+            off(2);
         }
     }
     if(json_object_dotget_string(input, "Control.Motor 4 Button") != NULL){
@@ -197,6 +208,7 @@ void control(char* msg){
             mav(3, motorSpeed4);
         } else {
             motorStat4 = 0;
+            off(3);
         }
     }
 
