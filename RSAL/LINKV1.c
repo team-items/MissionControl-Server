@@ -8,10 +8,6 @@
 
 #include <kovan/kovan.h>
 
-//int digital(int wat){ return 0; }
-//int analog(int wat){ return 999; }
-//void msleep(int time) {} 
-
 JSON_Value *root_value;
 JSON_Object *root_object;
 JSON_Value *ctrl_root_value;
@@ -145,10 +141,7 @@ char* generateConnLAO(){
     char* result = json_serialize_to_string_pretty(root_value_lao);
 
     //Free up variables
-    free(root_value_lao);
-    free(root_object_lao);
-    root_value_lao = 0;
-    root_object_lao = 0;
+    json_value_free(root_value_lao);
 
     return result;
 }
@@ -178,11 +171,8 @@ char* generateDataMsg(){
     char* result = json_serialize_to_string_pretty(root_value);
 
     //Free up variables
-    free(root_value);
-    free(root_object);
-    root_value = 0;
-    root_object = 0;
-
+    json_value_free(root_value);
+    
 	return result;
 }
 
