@@ -2,6 +2,7 @@
 MIDaC KIPR Link RSAL (Robotic System Abstraction Layer)
 Version 0.9
 */
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -32,6 +33,7 @@ void sendMsg(char* msg){
             exit(1);
         }
         free(message);
+        message = 0;
     }else{
         char* message = malloc(2048);
         strcpy(message, msg);
@@ -44,6 +46,7 @@ void sendMsg(char* msg){
             exit(1);
         }
         free(message);
+        message = 0;
     }
 }
 
@@ -89,6 +92,7 @@ int main(int argc, char *argv[])
         if(is_get(msg)){ 
             msg = generateDataMsg();
             sendMsg(msg);
+            json_free_serialized_string(msg);
         } else {
             control(msg);
         }
