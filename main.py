@@ -54,14 +54,19 @@ while running:
 		if control != None:
 			rsal.handleOutput(control) 
 
+		#wait for half the steprate time to prevent uds complications
+		time.sleep(conf.SAMPLERATE/2) 
+
 		#receive input from rsal and send it to all ready connected clients
 		rsal.request()
+		#print("getting data")
 		data = rsal.handleInput() 
+		#print("got data")
 		if data != None:
 			clients.handleOutput(data) 
 
 		#wait for steprate time
-		time.sleep(conf.SAMPLERATE) 
+		time.sleep(conf.SAMPLERATE/2) 
 	except KeyboardInterrupt:
 		log.logAndPrintWarning("Server manually stopped") 
 		break
