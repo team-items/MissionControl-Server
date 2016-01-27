@@ -132,7 +132,7 @@ char* generateConnLAO(){
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Button.ControlType", "Button");
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 2.Motor 3 Button.ControlType", "Button");
-    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.Descriptor", "Switch");
+    json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.ControlType", "Slider");
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.MinBound", -1000);
     json_object_dotset_number(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Slider.MaxBound", 1000);
     json_object_dotset_string(root_object_lao, "ConnLAO.Controller.Motor 3.Motor 4 Button.ControlType", "Button");
@@ -290,6 +290,5 @@ int is_get(char * msg){
     free(input);
     input = 0;
     ctrl_root_value = 0;
-
     return returnStatus;
 }
