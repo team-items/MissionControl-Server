@@ -59,9 +59,7 @@ while running:
 
 		#receive input from rsal and send it to all ready connected clients
 		rsal.request()
-		#print("getting data")
 		data = rsal.handleInput() 
-		#print("got data")
 		if data != None:
 			clients.handleOutput(data) 
 
