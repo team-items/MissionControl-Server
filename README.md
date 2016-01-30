@@ -1,4 +1,6 @@
 # MissionControl-Server
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/team-items/MissionControl-Server/blob/master/LICENSE)
+
 Server implementation of MIDaC, designed to transmit sensor values from (currently) the KIPR Link to client devices supporting the MIDaC Protocol. 
 
 ###Installation on KIPR Link:
