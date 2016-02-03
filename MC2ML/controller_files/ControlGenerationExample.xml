@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!-- Slider values are automatically stored in a variable of the same name as the slider (spaces are replaced) -->
+<!-- Libraries includes the compile flags and the libraries that must be included to compile -->
+<!-- Getters must be closed statements that return a value of the expected data type -->
+<!-- Supporting functions can be added in the support tag. -->
+<Controller>
+	<Libraries>
+		<Flag>-lkovan</Flag>
+		<Include>kovan/kovan.h</Include>
+	</Libraries>
+
+	<Support>
+		<Function>
+			int parse(){
+				return 0;
+			}
+		</Function>
+		<Variable>
+			int motor1State = 0;
+		</Variable>
+	</Support>
+
+	<Monitor>
+		<Integer>
+			<IntegerValue>
+				<Name>Analog 1</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(0) </Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 2</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Getter>analog(1) </Getter>
+			</IntegerValue>
+		</Integer>
+		<Float>
+			<FloatValue>
+				<Name>Gyro X</Name>
+				<MinBound>0.0</MinBound>
+				<MaxBound>1.0</MaxBound>
+				<Getter>gyroscope(1)</Getter>
+			</FloatValue>
+		</Float>
+		<Bool>
+			<BoolValue>
+				<Name>Digital 1</Name>
+				<Graph>20</Graph>
+				<Getter>digital(1)</Getter>
+			</BoolValue>
+		</Bool>
+	</Monitor>
+
+	<Control>
+		<Group>
+			<Name>Motor 1</Name>
+			<Slider>
+				<Name>Motor 1 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+				<Action>
+					if(motor1State){
+						mav(1, Motor_1_Slider);
+					}
+				</Action>
+			</Slider>
+			<Button>
+				<Name>Motor 1 Button</Name>
+				<Action>
+					if(motor1State){
+						motor1State = 0;
+						off(1);
+					} else {
+						motor1State = 1;
+						mav(1,Motor_1_Slider);
+					}
+				</Action>
+			</Button>
+		</Group>
+
+		<Group>
+			<Name>Servo 1</Name>
+			<Slider>
+				<Name>Servo 1 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+			</Slider>
+			<Button>
+				<Name>Servo 1 Button</Name>
+				<Descriptor>Set</Descriptor>
+				<Action>
+					servo_set_position(1, Servo_1_Slider);
+				</Action>
+			</Button>
+		</Group>
+
+		<Slider>
+			<Name>Some Slider</Name>
+			<MinBound>0</MinBound>
+			<MaxBound>100</MaxBound>
+		</Slider>
+
+		<Button>
+			<Name>SomeButton</Name>
+			<Descriptor>Set</Descriptor>
+			<Action></Action>
+		</Button>
+	</Control>
+</Controller>

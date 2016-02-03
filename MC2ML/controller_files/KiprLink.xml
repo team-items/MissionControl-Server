@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<Controller>
+	<Libraries>
+		
+		<Flag>-lkovan</Flag>
+		<Include>kovan/kovan.h</Include>
+	</Libraries>
+
+	<Support>
+		<Function>
+			void init(){
+			    enable_servos();
+			}
+		</Function>
+		<Function>
+			char* getDigitalWrapped(int port){
+				if(digital(port)){
+					return "true";
+				}
+				return "false";
+			}
+		</Function>
+		<Variable>
+			int motorStat0 = 0;
+		</Variable>
+		<Variable>
+			int motorStat1 = 0;
+		</Variable>
+		<Variable>
+			int motorStat2 = 0;
+		</Variable>
+		<Variable>
+			int motorStat3 = 0;
+		</Variable>
+	</Support>
+
+	<Monitor>
+		<Integer>
+			<IntegerValue>
+				<Name>Analog 0</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(0)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 1</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(1)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 2</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(2)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 3</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(3)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 4</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(4)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 5</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(5)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 6</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(6)</Getter>
+			</IntegerValue>
+			<IntegerValue>
+				<Name>Analog 7</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>2047</MaxBound>
+				<Graph>20</Graph>
+				<Getter>analog(7)</Getter>
+			</IntegerValue>
+		</Integer>
+		<Bool>
+			<BoolValue>
+				<Name>Digital 8</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(8)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 9</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(9)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 10</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(10)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 11</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(11)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 12</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(12)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 13</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(13)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 14</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(14)</Getter>
+			</BoolValue>
+			<BoolValue>
+				<Name>Digital 15</Name>
+				<Graph>20</Graph>
+				<Getter>getDigitalWrapped(15)</Getter>
+			</BoolValue>
+		</Bool>
+	</Monitor>
+
+	<Control>
+		<Group>
+			<Name>Motor 0</Name>
+			<Slider>
+				<Name>Motor 0 Slider</Name>
+				<MinBound>-1500</MinBound>
+				<MaxBound>1500</MaxBound>
+				<Action>
+					if(motorStat0){
+						mav(0, Motor_0_Slider);
+					}
+				</Action>
+			</Slider>
+			<Button>
+				<Name>Motor 0 Button</Name>
+				<Action>
+					if(motorStat0 == 0){
+			            motorStat0 = 1;
+			            mav(0, Motor_0_Slider);
+			        } else {
+			            motorStat0 = 0;
+			            off(0);
+			        }
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Motor 1</Name>
+			<Slider>
+				<Name>Motor 1 Slider</Name>
+				<MinBound>-1500</MinBound>
+				<MaxBound>1500</MaxBound>
+				<Action>
+					if(motorStat1){
+						mav(1, Motor_1_Slider);
+					}
+				</Action>
+			</Slider>
+			<Button>
+				<Name>Motor 1 Button</Name>
+				<Action>
+					if(motorStat1 == 0){
+			            motorStat1 = 1;
+			            mav(1, Motor_1_Slider);
+			        } else {
+			            motorStat1 = 0;
+			            off(1);
+			        }
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Motor 2</Name>
+			<Slider>
+				<Name>Motor 2 Slider</Name>
+				<MinBound>-1500</MinBound>
+				<MaxBound>1500</MaxBound>
+				<Action>
+					if(motorStat2){
+						mav(2, Motor_2_Slider);
+					}
+				</Action>
+			</Slider>
+			<Button>
+				<Name>Motor 2 Button</Name>
+				<Action>
+					if(motorStat2 == 0){
+			            motorStat2 = 1;
+			            mav(2, Motor_2_Slider);
+			        } else {
+			            motorStat2 = 0;
+			            off(2);
+			        }
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Motor 3</Name>
+			<Slider>
+				<Name>Motor 3 Slider</Name>
+				<MinBound>-1500</MinBound>
+				<MaxBound>1500</MaxBound>
+				<Action>
+					if(motorStat3){
+						mav(3, Motor_3_Slider);
+					}
+				</Action>
+			</Slider>
+			<Button>
+				<Name>Motor 3 Button</Name>
+				<Action>
+					if(motorStat3 == 0){
+			            motorStat3 = 1;
+			            mav(3, Motor_3_Slider);
+			        } else {
+			            motorStat3 = 0;
+			            off(3);
+			        }
+				</Action>
+			</Button>
+		</Group>
+
+		<Group>
+			<Name>Servo 0</Name>
+			<Slider>
+				<Name>Servo 0 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+			</Slider>
+			<Button>
+				<Name>Servo 0 Button</Name>
+				<Descriptor>Set</Descriptor>
+				<Action>
+					set_servo_position(0, Servo_0_Slider);
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Servo 1</Name>
+			<Slider>
+				<Name>Servo 1 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+			</Slider>
+			<Button>
+				<Name>Servo 1 Button</Name>
+				<Descriptor>Set</Descriptor>
+				<Action>
+					set_servo_position(1, Servo_1_Slider);
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Servo 2</Name>
+			<Slider>
+				<Name>Servo 2 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+			</Slider>
+			<Button>
+				<Name>Servo 2 Button</Name>
+				<Descriptor>Set</Descriptor>
+				<Action>
+					set_servo_position(2, Servo_2_Slider);
+				</Action>
+			</Button>
+		</Group>
+		<Group>
+			<Name>Servo 3</Name>
+			<Slider>
+				<Name>Servo 3 Slider</Name>
+				<MinBound>0</MinBound>
+				<MaxBound>100</MaxBound>
+			</Slider>
+			<Button>
+				<Name>Servo 3 Button</Name>
+				<Descriptor>Set</Descriptor>
+				<Action>
+					set_servo_position(3, Servo_3_Slider);
+				</Action>
+			</Button>
+		</Group>
+	</Control>
+</Controller>
