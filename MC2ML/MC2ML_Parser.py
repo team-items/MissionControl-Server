@@ -1,5 +1,8 @@
 import sys
+import os
 import xml.etree.ElementTree as ET
+
+MC2MLPath = os.path.dirname(os.path.abspath(__file__))
 
 #direct use
 flags = [] 
@@ -74,7 +77,7 @@ def grabInit(root):
 		inits.append(init.text.replace("\t", "").replace(" ", "")+"\n")
 
 def grabElements(path):
-	tree = ET.parse(path)
+	tree = ET.parse(MC2MLPath+"/controller_files/"+path)
 	root = tree.getroot()
 
 	grabLibraryElements(root)
@@ -247,6 +250,7 @@ if len(sys.argv) > 1:
 	grabGetters()
 	grabActions()
 
+	with open(MC2MLPath+'/ControllerTemplate', 'r') as template:
 	    templateString=template.read()
 
 	templateString = templateString.replace('<CustomIncludes>', generateString(includes))
@@ -258,10 +262,14 @@ if len(sys.argv) > 1:
 	templateString = templateString.replace('<Actions>', generateString(actions))
 	templateString = templateString.replace('<Init>', generateString(inits))
 
+	result = open(MC2MLPath+'/../RSAL/CONTROLLER.c','w')
 	result.write(templateString)
 	result.close()
 
-	print(generateCompileLine())
+	if len(sys.argv) > 2 and sys.argv[2] == "DEBUG":
+		os.system("cd "+MC2MLPath+"/.. && "+generateCompileLine())
+	else:
+		os.system("cd "+MC2MLPath+"/.. && "+generateCompileLine()+ " && rm RSAL/CONTROLLER.c")
 
 
 
