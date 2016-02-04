@@ -10,6 +10,7 @@ dataFields = []
 controlFields = []
 getters = []
 actions = []
+inits = []
 
 integers = []
 floats = []
@@ -17,9 +18,6 @@ bools = []
 groups = []
 sliders = []
 buttons = []
-
-
-result = ""
 
 information_dotset_string_lao = 'json_object_dotset_string(root_object_lao, "ConnLAO.Information.'
 information_dotset_number_lao = 'json_object_dotset_number(root_object_lao, "ConnLAO.Information.'
@@ -60,7 +58,7 @@ def grabSupportElements(root):
 		for variable in support.findall("Variable"):
 			variables.append(variable.text.strip())
 		for function in support.findall("Function"):
-			functions.append(function.text.strip().replace("\t", ""))
+			functions.append(function.text.strip().replace("\t", "").strip())
 
 def grabControlElements(root):
 	for control in root.findall("Control"):
@@ -71,6 +69,10 @@ def grabControlElements(root):
 		for button in control.findall("Button"):
 			buttons.append(button)
 
+def grabInit(root):
+	for init in root.findall("Init"):
+		inits.append(init.text.replace("\t", "").replace(" ", "")+"\n")
+
 def grabElements(path):
 	tree = ET.parse(path)
 	root = tree.getroot()
@@ -79,7 +81,7 @@ def grabElements(path):
 	grabMonitorElements(root)
 	grabSupportElements(root)
 	grabControlElements(root)
-
+	grabInit(root)
 
 def generateVariables():
 	for slider in sliders:
@@ -245,7 +247,6 @@ if len(sys.argv) > 1:
 	grabGetters()
 	grabActions()
 
-	with open('ControllerTemplate', 'r') as template:
 	    templateString=template.read()
 
 	templateString = templateString.replace('<CustomIncludes>', generateString(includes))
@@ -255,8 +256,8 @@ if len(sys.argv) > 1:
 	templateString = templateString.replace('<ControlFields>', generateString(controlFields))
 	templateString = templateString.replace('<Getters>', generateString(getters))
 	templateString = templateString.replace('<Actions>', generateString(actions))
+	templateString = templateString.replace('<Init>', generateString(inits))
 
-	result = open('CONTROLLER.c','w')
 	result.write(templateString)
 	result.close()
 
