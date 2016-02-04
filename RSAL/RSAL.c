@@ -10,7 +10,7 @@ Version 0.9
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include "LINKV1.c"
+#include "CONTROLLER.c"
 
 #define SOCK_PATH "uds_socket"
 
