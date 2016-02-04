@@ -3,6 +3,24 @@ import json
 import os
 from sys import platform as _platform
 
+def run_ifconifg(interface):
+	if _platform == "darwin":
+		return os.popen('ifconfig '+interface+' | grep "inet " | cut -d" " -f2 | cut -d" " -f1').read().strip()
+	else:
+		return os.popen('ifconfig '+interface+' | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip()
+
+def is_ip(input):
+	inpArr = input.split(".")
+	if len(inpArr) != 4:
+		return False
+	for number in inpArr:
+		try:
+			int(number)
+		except ValueError:
+			return False
+
+	return True
+
 #Used to store, load and manage the configuration
 class ConfigHandler():
 	CONFIGPATH = "config.conf" 
@@ -14,16 +32,21 @@ class ConfigHandler():
 
 	log = None 
 
-	#dirty trick to get current ip on eth0/en0/wlan0 (TODO: make it work based on settings not by guesstimation)
+
+	#gets ip via the unixoid ifconfig command
 	def get_host(self):
-		if _platform == "linux" or _platform == "linux2":
-			self.HOST = os.popen('ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip() 
-		if _platform == "linux3":
-			self.HOST = os.popen('ifconfig wlan0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1').read().strip() 
-		if _platform == "darwin":
-			self.HOST = os.popen('ifconfig en0 | grep "inet " | cut -d" " -f2 | cut -d" " -f1').read().strip() 
+		interfaces = ['en0', 'eth0', 'wlan0']
+
 		if _platform == "win32" or _platform == "win64":
 			self.log.logAndPrintWarning("Platform not supported, using 'localhost' for host") 
+		else:
+			for intf in interfaces:
+				ip = run_ifconifg(intf)
+				if is_ip(ip):
+					self.HOST = ip
+					return 
+
+	
 
 	#loads the config file and prints the running config
 	def __init__(self, path, log):
