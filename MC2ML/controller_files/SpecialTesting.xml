@@ -13,11 +13,6 @@
 			int off(int mot){return 0;}
 		</Function>
 		<Function>
-			void init(){
-			    enable_servos();
-			}
-		</Function>
-		<Function>
 			char* getDigitalWrapped(int port){
 				if(digital(port)){
 					return "true";
@@ -38,6 +33,9 @@
 			int motorStat3 = 0;
 		</Variable>
 	</Support>
+
+	<Init>
+	</Init>
 
 	<Monitor>
 		<Integer>

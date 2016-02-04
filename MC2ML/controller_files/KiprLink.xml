@@ -8,11 +8,6 @@
 
 	<Support>
 		<Function>
-			void init(){
-			    enable_servos();
-			}
-		</Function>
-		<Function>
 			char* getDigitalWrapped(int port){
 				if(digital(port)){
 					return "true";
@@ -33,6 +28,10 @@
 			int motorStat3 = 0;
 		</Variable>
 	</Support>
+
+	<Init>
+		enable_servos();
+	</Init>
 
 	<Monitor>
 		<Integer>

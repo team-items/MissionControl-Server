@@ -3,6 +3,7 @@
 <!-- Libraries includes the compile flags and the libraries that must be included to compile -->
 <!-- Getters must be closed statements that return a value of the expected data type -->
 <!-- Supporting functions can be added in the support tag. -->
+<!-- init is a function called before starting everything up, initalization like turning on servos should be done here a void function is generated -->
 <Controller>
 	<Libraries>
 		<Flag>-lkovan</Flag>
@@ -19,6 +20,9 @@
 			int motor1State = 0;
 		</Variable>
 	</Support>
+
+	<Init>
+	</Init>
 
 	<Monitor>
 		<Integer>
