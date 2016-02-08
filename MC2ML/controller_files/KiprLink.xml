@@ -38,21 +38,21 @@
 			<IntegerValue>
 				<Name>Analog 0</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(0)</Getter>
 			</IntegerValue>
 			<IntegerValue>
 				<Name>Analog 1</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(1)</Getter>
 			</IntegerValue>
 			<IntegerValue>
 				<Name>Analog 2</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(2)</Getter>
 			</IntegerValue>
@@ -66,28 +66,28 @@
 			<IntegerValue>
 				<Name>Analog 4</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(4)</Getter>
 			</IntegerValue>
 			<IntegerValue>
 				<Name>Analog 5</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(5)</Getter>
 			</IntegerValue>
 			<IntegerValue>
 				<Name>Analog 6</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(6)</Getter>
 			</IntegerValue>
 			<IntegerValue>
 				<Name>Analog 7</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>2047</MaxBound>
+				<MaxBound>1023</MaxBound>
 				<Graph>20</Graph>
 				<Getter>analog(7)</Getter>
 			</IntegerValue>
@@ -159,6 +159,7 @@
 			            motorStat0 = 0;
 			            off(0);
 			        }
+
 				</Action>
 			</Button>
 		</Group>
@@ -243,7 +244,7 @@
 			<Slider>
 				<Name>Servo 0 Slider</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>100</MaxBound>
+				<MaxBound>2047</MaxBound>
 			</Slider>
 			<Button>
 				<Name>Servo 0 Button</Name>
@@ -258,7 +259,7 @@
 			<Slider>
 				<Name>Servo 1 Slider</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>100</MaxBound>
+				<MaxBound>2047</MaxBound>
 			</Slider>
 			<Button>
 				<Name>Servo 1 Button</Name>
@@ -273,7 +274,7 @@
 			<Slider>
 				<Name>Servo 2 Slider</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>100</MaxBound>
+				<MaxBound>2047</MaxBound>
 			</Slider>
 			<Button>
 				<Name>Servo 2 Button</Name>
@@ -288,7 +289,7 @@
 			<Slider>
 				<Name>Servo 3 Slider</Name>
 				<MinBound>0</MinBound>
-				<MaxBound>100</MaxBound>
+				<MaxBound>2047</MaxBound>
 			</Slider>
 			<Button>
 				<Name>Servo 3 Button</Name>
