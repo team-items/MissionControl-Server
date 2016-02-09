@@ -105,19 +105,9 @@ class ClientManager():
 			else:
 				try:
 					client = self.getClientBySocket(sock) 
-					if client.isWebsocket:
-						data = client.receiveAndDecode() 
-					else:
-						data = NU.multiReceive(sock, self.conf.SEGMENT_SIZE) 
+					data = client.receiveAndDecode()
 					if data:
-						#Only the longest lasting connected can send
-						#if self.clients.index(self.getClientBySocket(sock)) == 0:
-						try:
-							control = json.dumps(data) 
-						except:
-							self.log.logAndPrintWarning("Unparseable client input by " + "Client "+`client.connectingId`+" ("+client.address+":"+`client.port`+")")
-						
-							return None
+						control = data
 					else:
 						if(sock in self.inputready):
 							self.inputready.remove(sock) 
