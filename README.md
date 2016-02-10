@@ -12,7 +12,7 @@ Server implementation of MIDaC, designed to transmit sensor values from (current
 ###Installation on KIPR Wallaby:
 * Add the missing parts of the Python 2.7.9 stdlib into <code>/usr/lib/python2.7/</code>
 * Copy the MissionControl-Server directory anywhere you want it on your link and switch into the directory
-* Run <code>python MC2ML/MC2ML\_Parser.py KiprWallaby.xml</code> to compile and generate the specific part for the KIPR Link (if you have an adapted MC2ML file store it in the MC2ML/controller_files directory and use it's file name instead of 'KiprWallaby.xml')
+* Run <code>python MC2ML/MC2ML\_Parser.py KiprWallaby.xml</code> to compile and generate the specific part for the KIPR Wallaby (if you have an adapted MC2ML file store it in the MC2ML/controller_files directory and use it's file name instead of 'KiprWallaby.xml')
 * Start the server with <code>./main.py</code> or <code>python main.py</code> (you might need to change the files permissions to execute)
 
 **Attention:** There are currently problems if you are connected to the Wallaby via USB. We are working on that.
