@@ -30,7 +30,6 @@
 	</Support>
 
 	<Init>
-		enable_servos();
 	</Init>
 
 	<Monitor>
@@ -295,5 +294,22 @@
 				</Action>
 			</Button>
 		</Group>
+
+		<Button>
+			<Name>Enable Servos</Name>
+			<Descriptor>Set</Descriptor>
+			<Action>
+				enable_servos();
+			</Action>
+		</Button>
+		<Button>
+			<Name>Disable Servos</Name>
+			<Descriptor>Set</Descriptor>
+			<Action>
+				disable_servos();
+			</Action>
+		</Button>
+
+
 	</Control>
 </Controller>
