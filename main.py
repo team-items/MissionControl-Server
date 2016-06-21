@@ -8,6 +8,8 @@ import os
 #Own Libraries
 from lib import *
 
+os.chdir(os.path.dirname(__file__))
+
 server = None 
 
 print("MissionControl Server (MIDaC V1)\n") 
